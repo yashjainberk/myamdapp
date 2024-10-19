@@ -1,0 +1,162 @@
+/* Fonts & Base Styles */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif; /* Modern, rounded font */
+    background-color: #f2f2f2; /* Light grey background for a soft look */
+    color: #333; /* Dark grey text for readability */
+}
+
+/* FolderPage container styling */
+.FolderPage {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #ffffff; /* White background for the main container */
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow for a lifted look */
+}
+
+/* Header styling */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    color: #4a90e2; /* Cool pastel blue for a calming header */
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0; /* Subtle bottom border */
+}
+
+/* Main content */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.content-container {
+    width: 100%;
+}
+
+/* Folder information intro */
+.folder-intro {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Folder title */
+.folder-title {
+    font-size: 1.8rem;
+    margin-top: 20px;
+    color: #4a90e2;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.folder-title::before {
+    content: "📂"; /* Add folder emoji for visual appeal */
+    margin-right: 8px;
+}
+
+/* Folder list styling */
+.folder-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.folder-item {
+    margin: 10px;
+}
+
+/* View file button */
+.view-button {
+    padding: 12px 24px;
+    border: none;
+    background-color: #ff6b6b; /* Soft coral color */
+    color: #fff;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.view-button:hover {
+    background-color: #ff4b4b; /* Slightly darker coral on hover */
+    transform: translateY(-2px);
+}
+
+/* File viewer container */
+.file-viewer-container {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 1000px;
+    height: 700px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #fafafa;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading and placeholder text */
+.loading-text,
+.select-file-text {
+    font-size: 1.2rem;
+    color: #999;
+    padding-top: 40px;
+    text-align: center;
+}
+
+/* Image viewer */
+.image-viewer {
+    width: 100%;
+    height: auto;
+    max-width: 1000px;
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Text viewer */
+.text-viewer {
+    width: 100%;
+    height: 100%;
+    max-width: 1000px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    color: #333;
+    white-space: pre-wrap;
+    overflow: auto;
+    border-radius: 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+}
+
+/* Footer styling */
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.footer a {
+    color: #4a90e2;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #1e73be; /* Darker blue on hover */
+    text-decoration: underline;
+}
