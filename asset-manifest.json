@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/myamdapp/static/css/main.80bfcd29.css",
+    "main.js": "/myamdapp/static/js/main.5a17e154.js",
+    "static/js/453.ef1854da.chunk.js": "/myamdapp/static/js/453.ef1854da.chunk.js",
+    "index.html": "/myamdapp/index.html",
+    "main.80bfcd29.css.map": "/myamdapp/static/css/main.80bfcd29.css.map",
+    "main.5a17e154.js.map": "/myamdapp/static/js/main.5a17e154.js.map",
+    "453.ef1854da.chunk.js.map": "/myamdapp/static/js/453.ef1854da.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.80bfcd29.css",
+    "static/js/main.5a17e154.js"
+  ]
+}
