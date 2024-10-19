@@ -2,22 +2,24 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   AppBar, Toolbar, Typography, CircularProgress, Card, CardContent, Grid, IconButton, Box, CssBaseline, Drawer, Divider, List, ListItem, ListItemText, TextField, Autocomplete, Button,
-  CardActionArea
+  CardActionArea, Slide, Fade
 } from '@mui/material';
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
 import FolderIcon from '@mui/icons-material/Folder';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-import { Viewer, Worker } from '@react-pdf-viewer/core';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-import * as pdfjsLib from 'pdfjs-dist/build/pdf';
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+import Timeline from '@mui/lab/Timeline';
+import TimelineItem from '@mui/lab/TimelineItem';
+import TimelineSeparator from '@mui/lab/TimelineSeparator';
+import TimelineDot from '@mui/lab/TimelineDot';
+import TimelineConnector from '@mui/lab/TimelineConnector';
+import TimelineContent from '@mui/lab/TimelineContent';
+import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import './App.css';
 
 // Create a custom theme with AMD color scheme
@@ -49,7 +51,7 @@ const theme = createTheme({
     },
   },
   shape: {
-    borderRadius: 12, // Slightly more rounded corners for a modern look
+    borderRadius: 12,
   },
 });
 
@@ -91,8 +93,6 @@ function App() {
   const [searchValue, setSearchValue] = useState(''); // State for search value
   const [inputValue, setInputValue] = useState(''); // State for search input
 
-  const defaultLayoutPluginInstance = defaultLayoutPlugin(); // PDF viewer plugin
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -111,20 +111,36 @@ function App() {
     fetchData();
   }, []);
 
-  // Flatten folder data into a searchable list
+  // Function to format date
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  // Sort folders by creation date for the timeline
+  const getSortedFolders = () => {
+    if (!data) return [];
+    return Object.entries(data.folders)
+      .map(([folderName, folderDetails]) => ({
+        folderName,
+        creationTime: folderDetails.folder_creation_time,
+      }))
+      .sort((a, b) => new Date(a.creationTime) - new Date(b.creationTime));
+  };
+
   const getAllFiles = () => {
     if (!data) return [];
-    return Object.entries(data.folders).flatMap(([folderName, files]) =>
-      files.map((file) => ({
+    return Object.entries(data.folders).flatMap(([folderName, folderDetails]) =>
+      folderDetails.files.map((file) => ({
         folderName,
-        fileName: file,
+        fileName: file.file_name,
+        createdOn: file.created_on,
       }))
     );
   };
 
   const fetchFile = (filePath, fileExtension) => {
     setLoadingPdf(true);
-    pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
     fetch(filePath)
       .then((response) => {
@@ -220,7 +236,7 @@ function App() {
         </Box>
       </DrawerStyled>
 
-      {/* Main container for search and folder display */}
+      {/* Main container */}
       <Box sx={{ padding: theme.spacing(3) }}>
         {/* Search Bar with Autocomplete */}
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
@@ -279,43 +295,39 @@ function App() {
           <Box mt={5}>
             <Typography variant="h5">Folder Contents</Typography>
             <Grid container spacing={3}>
-              {Array.isArray(selectedFolder) && selectedFolder.length > 0 ? (
-                selectedFolder.map((item, index) => {
-                  const fileExtension = item.split('.').pop().toLowerCase();
-                  const filePath = `https://amdupsynctest.blob.core.windows.net/subpoenas/${item}`;
+              {selectedFolder.files.map((file, index) => {
+                const fileExtension = file.file_name.split('.').pop().toLowerCase();
+                const filePath = `https://amdupsynctest.blob.core.windows.net/subpoenas/${file.file_name}`;
 
-                  // Determine file icon based on extension
-                  let FileIcon;
-                  if (fileExtension === 'pdf') {
-                    FileIcon = <PictureAsPdfIcon />;
-                  } else if (fileExtension.match(/(png|jpg|jpeg)/)) {
-                    FileIcon = <ImageIcon />;
-                  } else {
-                    FileIcon = <TextSnippetIcon />;
-                  }
+                let FileIcon;
+                if (fileExtension === 'pdf') {
+                  FileIcon = <PictureAsPdfIcon />;
+                } else if (fileExtension.match(/(png|jpg|jpeg)/)) {
+                  FileIcon = <ImageIcon />;
+                } else {
+                  FileIcon = <TextSnippetIcon />;
+                }
 
-                  return (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
-                      <Card
-                        sx={{
-                          backgroundColor: '#ffffff',
-                          borderRadius: theme.shape.borderRadius,
-                          boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.12)',
-                        }}
-                      >
-                        <CardActionArea onClick={() => fetchFile(filePath, fileExtension)}>
-                          <CardContent sx={{ textAlign: 'center' }}>
-                            {FileIcon}
-                            <Typography variant="body2" mt={2}>{item}</Typography>
-                          </CardContent>
-                        </CardActionArea>
-                      </Card>
-                    </Grid>
-                  );
-                })
-              ) : (
-                <p>No items found in this folder.</p>
-              )}
+                return (
+                  <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Card
+                      sx={{
+                        backgroundColor: '#ffffff',
+                        borderRadius: theme.shape.borderRadius,
+                        boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.12)',
+                      }}
+                    >
+                      <CardActionArea onClick={() => fetchFile(filePath, fileExtension)}>
+                        <CardContent sx={{ textAlign: 'center' }}>
+                          {FileIcon}
+                          <Typography variant="body2" mt={2}>{file.file_name}</Typography>
+                          <Typography variant="caption">Created: {formatDate(file.created_on)}</Typography>
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
+                  </Grid>
+                );
+              })}
             </Grid>
 
             {/* File Viewer */}
@@ -323,19 +335,76 @@ function App() {
               {loadingPdf ? (
                 <Typography>Loading file...</Typography>
               ) : fileType === 'pdf' && fileContent ? (
-                <Worker>
-                  <Viewer fileUrl={fileContent} plugins={[defaultLayoutPluginInstance]} />
-                </Worker>
+                <embed src={fileContent} type="application/pdf" width="100%" height="600px" />
               ) : fileType === 'image' && fileContent ? (
                 <img src={fileContent} alt="file content" style={{ maxWidth: '100%', borderRadius: 8 }} />
               ) : fileType === 'txt' && fileContent ? (
-                <pre style={{ whiteSpace: 'pre-wrap', background: '#f4f4f4', padding: '10px', borderRadius: 8 }}>
-                  {fileContent}
-                </pre>
+                <pre style={{ whiteSpace: 'pre-wrap' }}>{fileContent}</pre>
               ) : (
                 <Typography>Select a file to view.</Typography>
               )}
             </Box>
+          </Box>
+        )}
+
+        {/* Timeline Component */}
+        {data && (
+          <Box mt={5}>
+            <Typography variant="h5" sx={{ mb: 3 }}>
+              Case Creation Timeline
+            </Typography>
+            <Timeline position="alternate">
+              {getSortedFolders().map((folder, index) => (
+                <TimelineItem key={index}>
+                  <TimelineOppositeContent color="text.secondary">
+                    {formatDate(folder.creationTime)}
+                  </TimelineOppositeContent>
+                  <TimelineSeparator>
+                    <Slide in direction="up" timeout={1000}>
+                      <TimelineDot
+                        sx={{
+                          background: 'linear-gradient(135deg, #FF416C, #FF4B2B)',
+                          boxShadow: '0 0 10px rgba(255, 65, 108, 0.7)',
+                        }}
+                      >
+                        <FolderOpenIcon sx={{ color: '#fff' }} />
+                      </TimelineDot>
+                    </Slide>
+                    {index !== getSortedFolders().length - 1 && (
+                      <TimelineConnector
+                        sx={{
+                          backgroundColor: 'rgba(255, 65, 108, 0.8)',
+                          width: '4px',
+                          boxShadow: '0 0 12px rgba(255, 65, 108, 0.5)',
+                          borderRadius: '4px', // Curve the connector
+                        }}
+                      />
+                    )}
+                  </TimelineSeparator>
+                  <TimelineContent>
+                    <Fade in timeout={1000}>
+                      <Card
+                        sx={{
+                          backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                          backdropFilter: 'blur(10px)', // Glassmorphism effect
+                          borderRadius: 2,
+                          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                          '&:hover': {
+                            transform: 'scale(1.05)',
+                            boxShadow: '0px 12px 24px rgba(0, 0, 0, 0.2)',
+                          },
+                        }}
+                      >
+                        <CardContent>
+                          <Typography variant="h6">{folder.folderName}</Typography>
+                          <Typography variant="body2">Folder Created: {formatDate(folder.creationTime)}</Typography>
+                        </CardContent>
+                      </Card>
+                    </Fade>
+                  </TimelineContent>
+                </TimelineItem>
+              ))}
+            </Timeline>
           </Box>
         )}
       </Box>
