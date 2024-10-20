@@ -8,6 +8,16 @@ function FormUpload({ onUploadSuccess }) {
   const [caseType, setCaseType] = useState('');  // State for the selected case type
   const [uploading, setUploading] = useState(false);  // State to show upload progress
 
+  // States for additional information based on case type
+  const [mediaInquiryDetails, setMediaInquiryDetails] = useState('');
+  const [ngoInquiryDetails, setNgoInquiryDetails] = useState('');
+  const [subpoenaDetails, setSubpoenaDetails] = useState('');
+
+  // Specific fields for each case type
+  const [mediaSource, setMediaSource] = useState('');
+  const [ngoOrganization, setNgoOrganization] = useState('');
+  const [subpoenaJurisdiction, setSubpoenaJurisdiction] = useState('');
+
   const caseTypes = [
     { label: 'Media Inquiries', value: 'media-inquiries' },
     { label: 'NGO Inquiries', value: 'ngo-inquiries' },
@@ -25,6 +35,26 @@ function FormUpload({ onUploadSuccess }) {
 
     if (!caseInfo || !file || !caseType) {
       alert('Please provide case information, select a case type, and choose a file.');
+      return;
+    }
+
+    let additionalDetails = '';
+    switch (caseType) {
+      case 'media-inquiries':
+        additionalDetails = `${mediaInquiryDetails}, Source: ${mediaSource}`;
+        break;
+      case 'ngo-inquiries':
+        additionalDetails = `${ngoInquiryDetails}, Organization: ${ngoOrganization}`;
+        break;
+      case 'subpoenas':
+        additionalDetails = `${subpoenaDetails}, Jurisdiction: ${subpoenaJurisdiction}`;
+        break;
+      default:
+        break;
+    }
+
+    if (!additionalDetails) {
+      alert('Please provide specific details for the selected case type.');
       return;
     }
 
@@ -51,6 +81,12 @@ function FormUpload({ onUploadSuccess }) {
       setCaseInfo('');
       setFile(null);
       setCaseType('');
+      setMediaInquiryDetails('');
+      setNgoInquiryDetails('');
+      setSubpoenaDetails('');
+      setMediaSource('');
+      setNgoOrganization('');
+      setSubpoenaJurisdiction('');
 
       if (onUploadSuccess) {
         onUploadSuccess();  // Trigger refresh callback if provided
@@ -63,13 +99,96 @@ function FormUpload({ onUploadSuccess }) {
     }
   };
 
+  // Function to render case-type specific questions
+  const renderCaseTypeSpecificFields = () => {
+    switch (caseType) {
+      case 'media-inquiries':
+        return (
+          <>
+            <Grid item xs={12}>
+              <TextField
+                label="Media Inquiry Details"
+                variant="outlined"
+                fullWidth
+                value={mediaInquiryDetails}
+                onChange={(e) => setMediaInquiryDetails(e.target.value)}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Source of Media Inquiry"
+                variant="outlined"
+                fullWidth
+                value={mediaSource}
+                onChange={(e) => setMediaSource(e.target.value)}
+                required
+              />
+            </Grid>
+          </>
+        );
+      case 'ngo-inquiries':
+        return (
+          <>
+            <Grid item xs={12}>
+              <TextField
+                label="NGO Inquiry Details"
+                variant="outlined"
+                fullWidth
+                value={ngoInquiryDetails}
+                onChange={(e) => setNgoInquiryDetails(e.target.value)}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="NGO Organization"
+                variant="outlined"
+                fullWidth
+                value={ngoOrganization}
+                onChange={(e) => setNgoOrganization(e.target.value)}
+                required
+              />
+            </Grid>
+          </>
+        );
+      case 'subpoenas':
+        return (
+          <>
+            <Grid item xs={12}>
+              <TextField
+                label="Subpoena Details"
+                variant="outlined"
+                fullWidth
+                value={subpoenaDetails}
+                onChange={(e) => setSubpoenaDetails(e.target.value)}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Jurisdiction"
+                variant="outlined"
+                fullWidth
+                value={subpoenaJurisdiction}
+                onChange={(e) => setSubpoenaJurisdiction(e.target.value)}
+                required
+              />
+            </Grid>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           {/* Text field for case information */}
           <TextField
-            label="Case Information"
+            label="Case Name"
             variant="outlined"
             fullWidth
             value={caseInfo}
@@ -95,6 +214,10 @@ function FormUpload({ onUploadSuccess }) {
             ))}
           </TextField>
         </Grid>
+
+        {/* Render case-type specific fields dynamically */}
+        {renderCaseTypeSpecificFields()}
+
         <Grid item xs={12}>
           {/* Input for file selection */}
           <input
