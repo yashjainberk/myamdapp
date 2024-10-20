@@ -41,12 +41,24 @@ function FormUpload({ onUploadSuccess }) {
     let additionalDetails = '';
     switch (caseType) {
       case 'media-inquiries':
+        if (!mediaInquiryDetails || !mediaSource) {
+          alert('Please provide Media Inquiry details and Source.');
+          return;
+        }
         additionalDetails = `${mediaInquiryDetails}, Source: ${mediaSource}`;
         break;
       case 'ngo-inquiries':
+        if (!ngoInquiryDetails || !ngoOrganization) {
+          alert('Please provide NGO Inquiry details and the NGO Organization.');
+          return;
+        }
         additionalDetails = `${ngoInquiryDetails}, Organization: ${ngoOrganization}`;
         break;
       case 'subpoenas':
+        if (!subpoenaDetails || !subpoenaJurisdiction) {
+          alert('Please provide Subpoena details and Jurisdiction.');
+          return;
+        }
         additionalDetails = `${subpoenaDetails}, Jurisdiction: ${subpoenaJurisdiction}`;
         break;
       default:
@@ -61,13 +73,19 @@ function FormUpload({ onUploadSuccess }) {
     setUploading(true);
 
     try {
-      // Use your SAS URL here
-      const blobSasUrl = 'https://amdcases.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2024-10-20T10:04:29Z&st=2024-10-20T02:04:29Z&spr=https&sig=RuWyBbgFAyIIsMfr4N9bV%2Bp5Ji80GpyMEmSb7kr7Ijk%3D';
-      const blobServiceClient = new BlobServiceClient(blobSasUrl);
-      const containerClient = blobServiceClient.getContainerClient(caseType); // Upload to the selected case type's container
+      // Debugging to see form data before upload
+      console.log("Uploading:", { caseInfo, file, caseType, additionalDetails });
 
-      // Create a block blob client and upload the file
-      const blobClient = containerClient.getBlockBlobClient(file.name);
+      // Use your SAS URL here
+      const blobSasUrl = 'https://amdupsynctest.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2024-10-21T07:05:13Z&st=2024-10-20T23:05:13Z&spr=https&sig=Ll613EbTgEqf4okzvfCTLkLK%2FYyhaKamHscQELbMiVA%3D';
+      const blobServiceClient = new BlobServiceClient(blobSasUrl);
+
+      // All uploads are now going into the 'folders' container
+      const containerClient = blobServiceClient.getContainerClient('subpoenas'); 
+
+      // Create the full path for the file in the format caseType/filename (e.g., ngo-inquiries/file.png)
+      const blobPath = `${caseType}/${file.name}`;
+      const blobClient = containerClient.getBlockBlobClient(blobPath);
 
       await blobClient.uploadBrowserData(file, {
         blobHTTPHeaders: {
