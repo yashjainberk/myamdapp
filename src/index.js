@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom'; // BrowserRouter here
+import { BrowserRouter } from 'react-router-dom'; // Ensure BrowserRouter is only here
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -8,7 +8,7 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter> {/* This is the only BrowserRouter you should have */}
+    <BrowserRouter basename="/myamdapp"> {/* Use basename to match your subpath */}
       <App />
     </BrowserRouter>
   </React.StrictMode>
