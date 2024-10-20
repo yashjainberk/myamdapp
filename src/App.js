@@ -10,9 +10,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import ImageIcon from '@mui/icons-material/Image';
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'; // Add this import
+import ImageIcon from '@mui/icons-material/Image'; // Add this import
+import TextSnippetIcon from '@mui/icons-material/TextSnippet'; // Add this import
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
@@ -21,6 +21,7 @@ import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import './App.css';
+import FormUpload from './components/FormUpload'; // Import FormUpload component
 
 // Create a custom theme with AMD color scheme
 const theme = createTheme({
@@ -190,7 +191,6 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline /> {/* Normalize CSS */}
 
-      {/* AppBar with AMD logo */}
       <AppBar position="static" sx={{ backgroundColor: theme.palette.primary.main }}>
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setOpen(true)}>
@@ -236,7 +236,6 @@ function App() {
         </Box>
       </DrawerStyled>
 
-      {/* Main container */}
       <Box sx={{ padding: theme.spacing(3) }}>
         {/* Search Bar with Autocomplete */}
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
@@ -270,7 +269,15 @@ function App() {
           </Button>
         </Box>
 
-        {/* Display Folder Cards */}
+        {/* Upload Form Component */}
+        <Box sx={{ maxWidth: 400, margin: '0 auto', mb: 5 }}>
+          <Typography variant="h6" align="center" sx={{ mb: 2 }}>
+            Upload a File
+          </Typography>
+          <FormUpload onUploadSuccess={() => console.log('Upload successful')} />
+        </Box>
+
+        {/* Display Folder Contents */}
         {loading ? (
           <CircularProgress />
         ) : (
