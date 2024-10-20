@@ -4,6 +4,8 @@
   "homepage": "https://yashjainberk.github.io/myamdapp",
   "private": true,
   "dependencies": {
+    "@azure/msal-browser": "^3.26.1",
+    "@azure/msal-react": "^2.1.1",
     "@azure/storage-blob": "^12.25.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
