@@ -81,7 +81,7 @@ function FormUpload({ onUploadSuccess }) {
       const blobServiceClient = new BlobServiceClient(blobSasUrl);
 
       // All uploads are now going into the 'folders' container
-      const containerClient = blobServiceClient.getContainerClient('subpoenas'); 
+      const containerClient = blobServiceClient.getContainerClient('folders'); 
 
       // Create the full path for the file in the format caseType/filename (e.g., ngo-inquiries/file.png)
       const blobPath = `${caseType}/${file.name}`;

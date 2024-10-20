@@ -182,7 +182,7 @@ function App() {
       const { folderName, fileName } = selectedFile;
       setSelectedFolder(data.folders[folderName]); // Set selected folder based on search
       fetchFile(
-        `https://amdupsynctest.blob.core.windows.net/subpoenas/${fileName}`,
+        `https://amdupsynctest.blob.core.windows.net/folders/${fileName}`,
         fileName.split('.').pop().toLowerCase()
       );
     }
@@ -306,7 +306,7 @@ function App() {
                     <Grid container spacing={3}>
                       {selectedFolder.files.map((file, index) => {
                         const fileExtension = file.file_name.split('.').pop().toLowerCase();
-                        const filePath = `https://amdupsynctest.blob.core.windows.net/subpoenas/${file.file_name}`;
+                        const filePath = `https://amdupsynctest.blob.core.windows.net/folders/${file.file_name}`;
 
                         let FileIcon;
                         if (fileExtension === 'pdf') {
