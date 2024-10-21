@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { TextField, Button, Grid, MenuItem } from '@mui/material';
 import { BlobServiceClient } from "@azure/storage-blob";
 
@@ -6,6 +6,11 @@ function FormUpload({ onUploadSuccess }) {
   const [caseInfo, setCaseInfo] = useState('');  // State for case information input
   const [file, setFile] = useState(null);        // State for the file to be uploaded
   const [caseType, setCaseType] = useState('');  // State for the selected case type
+  const [tagName, setTagName] = useState('');  // State for the selected tag name
+  const [tagValue, setTagValue] = useState('');  // State for the selected tag value
+  const [tagNameList, setTagNameList] = useState([]);  // State for the selected tag name
+  const [tagValueList, setTagValueList] = useState([]);  // State for the selected tag value
+  const [tags, setTags] = useState({});  // JSON for the selected tags
   const [uploading, setUploading] = useState(false);  // State to show upload progress
 
   // States for additional information based on case type
@@ -28,6 +33,31 @@ function FormUpload({ onUploadSuccess }) {
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
+
+  const addTag = () => {
+    setTagNameList([...tagNameList, tagName]);
+    setTagValueList([...tagValueList, tagValue]);
+
+    createTags()
+
+    setTagName('');
+    setTagValue('');
+  }
+
+  const createTags = () => {
+    let json_1 = {}
+
+    // create a json where key is tag name and value is tag value and values are connected by list index
+    for (let i = 0; i < tagNameList.length; i++) {
+      json_1[tagNameList[i]] = tagValueList[i];
+    }
+
+    setTags(json_1)
+  }
+
+  useEffect(() => {
+    createTags()
+  }, [tagNameList, tagValueList])
 
   // Handle form submission
   const handleSubmit = async (event) => {
@@ -87,11 +117,18 @@ function FormUpload({ onUploadSuccess }) {
       const blobPath = `${caseType}/${file.name}`;
       const blobClient = containerClient.getBlockBlobClient(blobPath);
 
-      await blobClient.uploadBrowserData(file, {
+
+      const uploadOptions = {
         blobHTTPHeaders: {
           blobContentType: file.type,  // Set the MIME type
         },
-      });
+        tags: tags
+      };
+
+      await blobClient.uploadData(
+          file,
+          uploadOptions,
+      );
 
       alert('File uploaded successfully!');
 
@@ -105,6 +142,9 @@ function FormUpload({ onUploadSuccess }) {
       setMediaSource('');
       setNgoOrganization('');
       setSubpoenaJurisdiction('');
+
+      setTagValueList([]);
+      setTagNameList([]);
 
       if (onUploadSuccess) {
         onUploadSuccess();  // Trigger refresh callback if provided
@@ -232,6 +272,38 @@ function FormUpload({ onUploadSuccess }) {
             ))}
           </TextField>
         </Grid>
+
+        <Grid item xs={12}>
+          {/* Text field for case information */}
+          <TextField
+              label="Tag Name"
+              variant="outlined"
+              fullWidth
+              value={tagName}
+              onChange={(e) => setTagName(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          {/* Text field for case information */}
+          <TextField
+              label="Tag Value"
+              variant="outlined"
+              fullWidth
+              value={tagValue}
+              onChange={(e) => setTagValue(e.target.value)}
+          />
+        </Grid>
+        <Button variant="contained" color="primary" onClick={addTag}>
+            Add Tag
+        </Button>
+
+        {/* Render TagNameList and TagValueList */}
+        {tagNameList.map((tag, index) => (
+          <div key={index}>
+            <p>{tag}: {tagValueList[index]}</p>
+          </div>
+        ))}
+
 
         {/* Render case-type specific fields dynamically */}
         {renderCaseTypeSpecificFields()}
