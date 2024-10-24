@@ -23,15 +23,15 @@ function FormUpload({ onUploadSuccess }) {
   const [stateprovince, setstateprovince] = useState('');
   const [carID, setcarID] = useState('');
   
-  // States for additional information based on case type
-  const [mediaInquiryDetails, setMediaInquiryDetails] = useState('');
-  const [ngoInquiryDetails, setNgoInquiryDetails] = useState('');
-  const [subpoenaDetails, setSubpoenaDetails] = useState('');
-  const [brokerInvestigationsDetails, setbrokerInvestigationsDetails] = useState('');
-  const [ceaseDesistDetails, setceaseDesistDetails] = useState('');
-  const [counterfeitDetails, setcounterfeitDetails] = useState('');
-  const [customsSeizuresDetails, setcustomsSeizuresDetails] = useState('');
-  const [govtInquiriesDetails, setgovtInquiriesDetails] = useState('');
+  // // States for additional information based on case type
+  // const [mediaInquiryDetails, setMediaInquiryDetails] = useState('');
+  // const [ngoInquiryDetails, setNgoInquiryDetails] = useState('');
+  // const [subpoenaDetails, setSubpoenaDetails] = useState('');
+  // const [brokerInvestigationsDetails, setbrokerInvestigationsDetails] = useState('');
+  // const [ceaseDesistDetails, setceaseDesistDetails] = useState('');
+  // const [counterfeitDetails, setcounterfeitDetails] = useState('');
+  // const [customsSeizuresDetails, setcustomsSeizuresDetails] = useState('');
+  // const [govtInquiriesDetails, setgovtInquiriesDetails] = useState('');
 
   // Specific fields for each case type
   const [mediaSource, setMediaSource] = useState('');
@@ -104,76 +104,76 @@ function FormUpload({ onUploadSuccess }) {
     let additionalDetails = '';
     switch (caseType) {
       case 'media-inquiries':
-        if (!mediaInquiryDetails || !mediaSource || !incID || !incidentType || 
+        if (!mediaSource || !incID || !incidentType || 
           !country || !totalQTY || !dateReported || !region || !stateprovince || 
           !carID) {
           alert('Please provide Media Inquiry details and Source.');
           return;
         }
-        additionalDetails = `${mediaInquiryDetails}, Source: ${mediaSource}`;
+        // additionalDetails = `${mediaInquiryDetails}, Source: ${mediaSource}`;
         break;
       case 'ngo-inquiries':
-        if (!ngoInquiryDetails || !ngoOrganization || !incID || !incidentType || 
+        if (!ngoOrganization || !incID || !incidentType || 
           !country || !totalQTY || !dateReported || !region || !stateprovince || 
           !carID) {
           alert('Please provide NGO Inquiry details and the NGO Organization.');
           return;
         }
-        additionalDetails = `${ngoInquiryDetails}, Organization: ${ngoOrganization}`;
+        // additionalDetails = `${ngoInquiryDetails}, Organization: ${ngoOrganization}`;
         break;
       case 'subpoenas':
-        if (!subpoenaDetails || !subpoenaJurisdiction || !subpoenaOpen || !incID || !incidentType || 
+        if (!subpoenaJurisdiction || !subpoenaOpen || !incID || !incidentType || 
           !country || !totalQTY || !dateReported || !region || !stateprovince || 
           !carID) {
           alert('Please provide Subpoena details and Jurisdiction.');
           return;
         }
-        additionalDetails = `${subpoenaDetails}, Jurisdiction: ${subpoenaJurisdiction}`;
+        // additionalDetails = `${subpoenaDetails}, Jurisdiction: ${subpoenaJurisdiction}`;
         break;
       case 'broker-investigations':
-        if (!brokerInvestigationsDetails || !incID || !incidentType || 
+        if (!incID || !incidentType || 
           !country || !totalQTY || !dateReported || !region || !stateprovince || 
           !carID) {
           alert('Please provide Subpoena details and Jurisdiction.');
           return;
         }
-        additionalDetails = `${subpoenaDetails}, Jurisdiction: ${subpoenaJurisdiction}`;
+        // additionalDetails = `${subpoenaDetails}, Jurisdiction: ${subpoenaJurisdiction}`;
         break;
       case 'cease-desist':
-        if (!ceaseDesistDetails || !ceaseDesistOpen || !incID || !incidentType || 
+        if (!ceaseDesistOpen || !incID || !incidentType || 
           !country || !totalQTY || !dateReported || !region || !stateprovince || 
           !carID) {
           alert('Please provide Media Inquiry details and Source.');
           return;
         }
-        additionalDetails = `${mediaInquiryDetails}, Source: ${mediaSource}`;
+        // additionalDetails = `${mediaInquiryDetails}, Source: ${mediaSource}`;
         break;
       case 'counterfeit':
-        if (!counterfeitDetails || !incID || !incidentType || 
+        if (!incID || !incidentType || 
           !country || !totalQTY || !dateReported || !region || !stateprovince || 
           !carID) {
           alert('Please provide NGO Inquiry details and the NGO Organization.');
           return;
         }
-        additionalDetails = `${ngoInquiryDetails}, Organization: ${ngoOrganization}`;
+        // additionalDetails = `${ngoInquiryDetails}, Organization: ${ngoOrganization}`;
         break;
       case 'customs-seizures':
-        if (!customsSeizuresDetails || !customsPortAgency || !destinationCountry || !seizureDate || !infringmentType 
+        if (!customsPortAgency || !destinationCountry || !seizureDate || !infringmentType 
           || !originCountry || !locationRecovered || !bondAmount || !incID || !incidentType || !country || !totalQTY || 
           !dateReported || !region || !stateprovince || !carID) {
           alert('Please provide all necessary details');
           return;
         }
-        additionalDetails = `${subpoenaDetails}, Jurisdiction: ${subpoenaJurisdiction}`;
+        // additionalDetails = `${subpoenaDetails}, Jurisdiction: ${subpoenaJurisdiction}`;
         break;
       case 'govt-inquiries':
-        if (!govtInquiriesDetails || !incID || !incidentType || 
+        if (!incID || !incidentType || 
           !country || !totalQTY || !dateReported || !region || !stateprovince || 
           !carID) {
           alert('Please provide Subpoena details and Jurisdiction.');
           return;
         }
-        additionalDetails = `${subpoenaDetails}, Jurisdiction: ${subpoenaJurisdiction}`;
+        // additionalDetails = `${subpoenaDetails}, Jurisdiction: ${subpoenaJurisdiction}`;
         break;
       
       default:
@@ -234,17 +234,17 @@ function FormUpload({ onUploadSuccess }) {
       setcarID('');
       
       //Clear Details
-      setMediaInquiryDetails('');
-      setNgoInquiryDetails('');
-      setSubpoenaDetails('');
-      setbrokerInvestigationsDetails('');
-      setceaseDesistDetails('');
-      setcounterfeitDetails('');
-      setcustomsSeizuresDetails('');
-      setgovtInquiriesDetails('');
-      setMediaInquiryDetails('');
-      setNgoInquiryDetails('');
-      setSubpoenaDetails('');
+      // setMediaInquiryDetails('');
+      // setNgoInquiryDetails('');
+      // setSubpoenaDetails('');
+      // setbrokerInvestigationsDetails('');
+      // setceaseDesistDetails('');
+      // setcounterfeitDetails('');
+      // setcustomsSeizuresDetails('');
+      // setgovtInquiriesDetails('');
+      // setMediaInquiryDetails('');
+      // setNgoInquiryDetails('');
+      // setSubpoenaDetails('');
 
       setMediaSource('');
       setNgoOrganization('');
