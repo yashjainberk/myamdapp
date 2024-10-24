@@ -281,16 +281,6 @@ function FormUpload({ onUploadSuccess }) {
           <>
             <Grid item xs={12}>
               <TextField
-                label="Media Inquiry Details"
-                variant="outlined"
-                fullWidth
-                value={mediaInquiryDetails}
-                onChange={(e) => setMediaInquiryDetails(e.target.value)}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
                 label="Source of Media Inquiry"
                 variant="outlined"
                 fullWidth
@@ -387,16 +377,6 @@ function FormUpload({ onUploadSuccess }) {
           <>
             <Grid item xs={12}>
               <TextField
-                label="NGO Inquiry Details"
-                variant="outlined"
-                fullWidth
-                value={ngoInquiryDetails}
-                onChange={(e) => setNgoInquiryDetails(e.target.value)}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
                 label="NGO Organization"
                 variant="outlined"
                 fullWidth
@@ -490,16 +470,6 @@ function FormUpload({ onUploadSuccess }) {
       case 'subpoenas':
         return (
           <>
-            <Grid item xs={12}>
-              <TextField
-                label="Subpoena Details"
-                variant="outlined"
-                fullWidth
-                value={subpoenaDetails}
-                onChange={(e) => setSubpoenaDetails(e.target.value)}
-                required
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Jurisdiction"
@@ -608,18 +578,6 @@ function FormUpload({ onUploadSuccess }) {
           <>
             <Grid item xs={12}>
               <TextField
-                label="Broker Investigation Details"
-                variant="outlined"
-                fullWidth
-                value={brokerInvestigationsDetails}
-                onChange={(e) => setbrokerInvestigationsDetails(e.target.value)}
-                required
-              />
-            </Grid>
-    
-
-            <Grid item xs={12}>
-              <TextField
                 label="Incident ID"
                 variant="outlined"
                 fullWidth
@@ -703,16 +661,6 @@ function FormUpload({ onUploadSuccess }) {
       case 'cease-desist':
         return (
           <>
-            <Grid item xs={12}>
-              <TextField
-                label="Cease and Desist Details"
-                variant="outlined"
-                fullWidth
-                value={ceaseDesistDetails}
-                onChange={(e) => setceaseDesistDetails(e.target.value)}
-                required
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Open/Closed"
@@ -811,18 +759,6 @@ function FormUpload({ onUploadSuccess }) {
           <>
             <Grid item xs={12}>
               <TextField
-                label="Counterfeit Details"
-                variant="outlined"
-                fullWidth
-                value={counterfeitDetails}
-                onChange={(e) => setcounterfeitDetails(e.target.value)}
-                required
-              />
-            </Grid>
-            
-
-            <Grid item xs={12}>
-              <TextField
                 label="Incident ID"
                 variant="outlined"
                 fullWidth
@@ -906,17 +842,6 @@ function FormUpload({ onUploadSuccess }) {
       case 'customs-seizures':
         return (
           <>
-            <Grid item xs={12}>
-              <TextField
-                label="Customs Seizures Details"
-                variant="outlined"
-                fullWidth
-                value={customsSeizuresDetails}
-                onChange={(e) => setcustomsSeizuresDetails(e.target.value)}
-                required
-              />
-            </Grid>
-      
             <Grid item xs={12}>
               <TextField
                 label="Customs Port/Agency"
@@ -1084,18 +1009,6 @@ function FormUpload({ onUploadSuccess }) {
       case 'govt-inquiries':
         return (
           <>
-            <Grid item xs={12}>
-              <TextField
-                label="Govt Law Enforcement Inquiries Details"
-                variant="outlined"
-                fullWidth
-                value={govtInquiriesDetails}
-                onChange={(e) => setgovtInquiriesDetails(e.target.value)}
-                required
-              />
-            </Grid>
-        
-
             <Grid item xs={12}>
               <TextField
                 label="Incident ID"
