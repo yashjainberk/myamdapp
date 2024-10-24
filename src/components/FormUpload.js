@@ -43,7 +43,7 @@ function FormUpload({ onUploadSuccess }) {
   const [customsPortAgency, setCustomsPortAgency] = useState('');
   const [destinationCountry, setDestinationCountry] = useState('');
   const [seizureDate, setSeizureDate] = useState('');
-  const [infringmentType, setInfringmentType] = useState('');
+  const [infringementType, setinfringementType] = useState('');
   const [originCountry, setOriginCountry] = useState('');
   const [locationRecovered, setLocationRecovered] = useState('');
   const [bondAmount, setBondAmount] = useState('');
@@ -84,6 +84,98 @@ function FormUpload({ onUploadSuccess }) {
     for (let i = 0; i < tagNameList.length; i++) {
       json_1[tagNameList[i]] = tagValueList[i];
     }
+      // Add additional fields as tags
+    if (caseType === 'media-inquiries') {
+      json_1['sourceOfMediaInquiry'] = mediaSource;
+      json_1['incidentId'] = incID;
+      json_1['country'] = country;
+      json_1['incidentType'] = incidentType;
+      json_1['totalQty'] = totalQTY;
+      json_1['dateReported'] = dateReported;
+      json_1['region'] = region;
+      json_1['stateProvince'] = stateprovince;
+      json_1['carId'] = carID;
+    }
+
+    if (caseType === 'customs-seizures') {
+      json_1['customsPortAgency'] = customsPortAgency;
+      json_1['destinationCountry'] = destinationCountry;
+      json_1['seizureDate'] = seizureDate;
+      json_1['infringementType'] = infringementType;
+      json_1['originCountry'] = originCountry;
+      json_1['locationRecovered'] = locationRecovered;
+      json_1['bondAmount'] = bondAmount;
+    }
+
+    if (caseType === 'govt-inquiries') {
+      json_1['incidentId'] = incID;
+      json_1['incidentType'] = incidentType;
+      json_1['country'] = country;
+      json_1['totalQty'] = totalQTY;
+      json_1['dateReported'] = dateReported;
+      json_1['region'] = region;
+      json_1['stateProvince'] = stateprovince;
+      json_1['carId'] = carID;
+    }
+
+    if (caseType === 'cease-desist') {
+      json_1['ceaseDesistOpen'] = ceaseDesistOpen;
+      json_1['incidentId'] = incID;
+      json_1['incidentType'] = incidentType;
+      json_1['country'] = country;
+      json_1['totalQty'] = totalQTY;
+      json_1['dateReported'] = dateReported;
+      json_1['region'] = region;
+      json_1['stateProvince'] = stateprovince;
+      json_1['carId'] = carID;
+    } 
+
+    if (caseType === 'counterfeit') {
+      json_1['infringementType'] = infringementType;
+      json_1['originCountry'] = originCountry;
+      json_1['locationRecovered'] = locationRecovered;
+      json_1['bondAmount'] = bondAmount;
+      json_1['incidentId'] = incID;
+      json_1['incidentType'] = incidentType;
+      json_1['country'] = country;
+      json_1['totalQty'] = totalQTY;
+    } 
+
+    if (caseType === 'broker-investigations') {
+      json_1['incidentId'] = incID;
+      json_1['incidentType'] = incidentType;
+      json_1['country'] = country;
+      json_1['totalQty'] = totalQTY;
+      json_1['dateReported'] = dateReported;
+      json_1['region'] = region;
+      json_1['stateProvince'] = stateprovince;
+      json_1['carId'] = carID;
+    } 
+
+    if (caseType === 'ngo-inquiries') {
+      json_1['ngoOrganization'] = ngoOrganization;
+      json_1['incidentId'] = incID;
+      json_1['incidentType'] = incidentType;
+      json_1['country'] = country;
+      json_1['totalQty'] = totalQTY;
+      json_1['dateReported'] = dateReported;
+      json_1['region'] = region;
+      json_1['stateProvince'] = stateprovince;
+      json_1['carId'] = carID;
+    }
+
+    if (caseType === 'subpoenas') {
+      json_1['subpoenaJurisdiction'] = subpoenaJurisdiction;
+      json_1['subpoenaOpen'] = subpoenaOpen;
+      json_1['incidentId'] = incID;
+      json_1['incidentType'] = incidentType;
+      json_1['country'] = country;
+      json_1['totalQty'] = totalQTY;
+      json_1['dateReported'] = dateReported;
+      json_1['region'] = region;
+      json_1['stateProvince'] = stateprovince;
+      json_1['carId'] = carID;
+    }
 
     setTags(json_1)
   }
@@ -98,6 +190,11 @@ function FormUpload({ onUploadSuccess }) {
 
     if (!caseInfo || !file || !caseType) {
       alert('Please provide case information, select a case type, and choose a file.');
+      return;
+    }
+
+    if (!tags.priority) {
+      alert('Please select a priority.');
       return;
     }
 
@@ -158,7 +255,7 @@ function FormUpload({ onUploadSuccess }) {
         // additionalDetails = `${ngoInquiryDetails}, Organization: ${ngoOrganization}`;
         break;
       case 'customs-seizures':
-        if (!customsPortAgency || !destinationCountry || !seizureDate || !infringmentType 
+        if (!customsPortAgency || !destinationCountry || !seizureDate || !infringementType 
           || !originCountry || !locationRecovered || !bondAmount || !incID || !incidentType || !country || !totalQTY || 
           !dateReported || !region || !stateprovince || !carID) {
           alert('Please provide all necessary details');
@@ -180,10 +277,10 @@ function FormUpload({ onUploadSuccess }) {
         break;
     }
 
-    if (!additionalDetails) {
-      alert('Please provide specific details for the selected case type.');
-      return;
-    }
+    // if (!additionalDetails) {
+    //   alert('Please provide specific details for the selected case type.');
+    //   return;
+    // }
 
     setUploading(true);
 
@@ -257,7 +354,7 @@ function FormUpload({ onUploadSuccess }) {
       setCustomsPortAgency('');
       setDestinationCountry('');
       setSeizureDate('');
-      setInfringmentType('');
+      setInfringementType('');
       setOriginCountry('');
       setLocationRecovered('');
       setBondAmount('');
@@ -279,6 +376,22 @@ function FormUpload({ onUploadSuccess }) {
       case 'media-inquiries':
         return (
           <>
+          <Grid item xs={12}>
+              <TextField
+                select
+                label="Priority"
+                variant="outlined"
+                fullWidth
+                value={tags.priority || ''} 
+                onChange={(e) => setTags({ ...tags, priority: e.target.value })}
+                required
+              >
+                <MenuItem value="low">Low</MenuItem>
+                <MenuItem value="medium">Medium</MenuItem>
+                <MenuItem value="high">High</MenuItem>
+              </TextField>
+          </Grid>
+
             <Grid item xs={12}>
               <TextField
                 label="Source of Media Inquiry"
@@ -376,6 +489,22 @@ function FormUpload({ onUploadSuccess }) {
         return (
           <>
             <Grid item xs={12}>
+                <TextField
+                  select
+                  label="Priority"
+                  variant="outlined"
+                  fullWidth
+                  value={tags.priority || ''}
+                  onChange={(e) => setTags({ ...tags, priority: e.target.value })}
+                  required
+                >
+                  <MenuItem value="low">Low</MenuItem>
+                  <MenuItem value="medium">Medium</MenuItem>
+                  <MenuItem value="high">High</MenuItem>
+                </TextField>
+            </Grid>
+
+            <Grid item xs={12}>
               <TextField
                 label="NGO Organization"
                 variant="outlined"
@@ -470,6 +599,22 @@ function FormUpload({ onUploadSuccess }) {
       case 'subpoenas':
         return (
           <>
+            <Grid item xs={12}>
+              <TextField
+                select
+                label="Priority"
+                variant="outlined"
+                fullWidth
+                value={tags.priority || ''} 
+                onChange={(e) => setTags({ ...tags, priority: e.target.value })}
+                required
+              >
+                <MenuItem value="low">Low</MenuItem>
+                <MenuItem value="medium">Medium</MenuItem>
+                <MenuItem value="high">High</MenuItem>
+              </TextField>
+          </Grid>
+
             <Grid item xs={12}>
               <TextField
                 label="Jurisdiction"
@@ -578,6 +723,21 @@ function FormUpload({ onUploadSuccess }) {
           <>
             <Grid item xs={12}>
               <TextField
+                select
+                label="Priority"
+                variant="outlined"
+                fullWidth
+                value={tags.priority || ''}
+                onChange={(e) => setTags({ ...tags, priority: e.target.value })}
+                required
+              >
+                <MenuItem value="low">Low</MenuItem>
+                <MenuItem value="medium">Medium</MenuItem>
+                <MenuItem value="high">High</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
                 label="Incident ID"
                 variant="outlined"
                 fullWidth
@@ -661,6 +821,21 @@ function FormUpload({ onUploadSuccess }) {
       case 'cease-desist':
         return (
           <>
+            <Grid item xs={12}>
+              <TextField
+                select
+                label="Priority"
+                variant="outlined"
+                fullWidth
+                value={tags.priority || ''} 
+                onChange={(e) => setTags({ ...tags, priority: e.target.value })}
+                required
+              >
+                <MenuItem value="low">Low</MenuItem>
+                <MenuItem value="medium">Medium</MenuItem>
+                <MenuItem value="high">High</MenuItem>
+              </TextField>
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Open/Closed"
@@ -759,6 +934,21 @@ function FormUpload({ onUploadSuccess }) {
           <>
             <Grid item xs={12}>
               <TextField
+                select
+                label="Priority"
+                variant="outlined"
+                fullWidth
+                value={tags.priority || ''} 
+                onChange={(e) => setTags({ ...tags, priority: e.target.value })}
+                required
+              >
+                <MenuItem value="low">Low</MenuItem>
+                <MenuItem value="medium">Medium</MenuItem>
+                <MenuItem value="high">High</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
                 label="Incident ID"
                 variant="outlined"
                 fullWidth
@@ -844,6 +1034,21 @@ function FormUpload({ onUploadSuccess }) {
           <>
             <Grid item xs={12}>
               <TextField
+                select
+                label="Priority"
+                variant="outlined"
+                fullWidth
+                value={tags.priority || ''} 
+                onChange={(e) => setTags({ ...tags, priority: e.target.value })}
+                required
+              >
+                <MenuItem value="low">Low</MenuItem>
+                <MenuItem value="medium">Medium</MenuItem>
+                <MenuItem value="high">High</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
                 label="Customs Port/Agency"
                 variant="outlined"
                 fullWidth
@@ -877,8 +1082,8 @@ function FormUpload({ onUploadSuccess }) {
                 label="Customs IPR Infringement Type"
                 variant="outlined"
                 fullWidth
-                value={infringmentType}
-                onChange={(e) => setInfringmentType(e.target.value)}
+                value={infringementType}
+                onChange={(e) => setinfringementType(e.target.value)}
                 required
               />
             </Grid>
@@ -1009,6 +1214,21 @@ function FormUpload({ onUploadSuccess }) {
       case 'govt-inquiries':
         return (
           <>
+            <Grid item xs={12}>
+              <TextField
+                select
+                label="Priority"
+                variant="outlined"
+                fullWidth
+                value={tags.priority || ''} 
+                onChange={(e) => setTags({ ...tags, priority: e.target.value })}
+                required
+              >
+                <MenuItem value="low">Low</MenuItem>
+                <MenuItem value="medium">Medium</MenuItem>
+                <MenuItem value="high">High</MenuItem>
+              </TextField>
+          </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Incident ID"
