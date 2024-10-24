@@ -289,7 +289,7 @@ function FormUpload({ onUploadSuccess }) {
       console.log("Uploading:", { caseInfo, file, caseType, additionalDetails });
 
       // Use your SAS URL here
-      const blobSasUrl = 'https://amdupsynctest.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2024-10-21T07:05:13Z&st=2024-10-20T23:05:13Z&spr=https&sig=Ll613EbTgEqf4okzvfCTLkLK%2FYyhaKamHscQELbMiVA%3D';
+      const blobSasUrl = 'https://amdupsynctest.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2026-08-08T06:58:12Z&st=2024-10-24T22:58:12Z&spr=https,http&sig=BeMYOypmexAYhYWexJYTSCjD1yf9Dw9y7KqKX1rROfI%3D';
       const blobServiceClient = new BlobServiceClient(blobSasUrl);
 
       // All uploads are now going into the 'folders' container
