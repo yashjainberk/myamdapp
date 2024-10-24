@@ -77,6 +77,126 @@ function FormUpload({ onUploadSuccess }) {
 
     setTags(json_1)
   }
+  
+  // Function to generate tags based on the selected case type
+  const generateTagsForCaseType = () => {
+    let tags = {};
+
+    switch (caseType) {
+      case 'media-inquiries':
+        tags = {
+          mediaSource,
+          incID,
+          incidentType,
+          country,
+          totalQTY,
+          dateReported,
+          region,
+          stateprovince,
+          carID,
+        };
+        break;
+      case 'ngo-inquiries':
+        tags = {
+          ngoOrganization,
+          incID,
+          incidentType,
+          country,
+          totalQTY,
+          dateReported,
+          region,
+          stateprovince,
+          carID,
+        };
+        break;
+      case 'subpoenas':
+        tags = {
+          subpoenaJurisdiction,
+          subpoenaOpen,
+          incID,
+          incidentType,
+          country,
+          totalQTY,
+          dateReported,
+          region,
+          stateprovince,
+          carID,
+        };
+        break;
+      case 'broker-investigations':
+        tags = {
+          incID,
+          incidentType,
+          country,
+          totalQTY,
+          dateReported,
+          region,
+          stateprovince,
+          carID,
+        };
+        break;
+      case 'cease-desist':
+        tags = {
+          ceaseDesistOpen,
+          incID,
+          incidentType,
+          country,
+          totalQTY,
+          dateReported,
+          region,
+          stateprovince,
+          carID,
+        };
+        break;
+      case 'counterfeit':
+        tags = {
+          incID,
+          incidentType,
+          country,
+          totalQTY,
+          dateReported,
+          region,
+          stateprovince,
+          carID,
+        };
+        break;
+      case 'customs-seizures':
+        tags = {
+          customsPortAgency,
+          destinationCountry,
+          seizureDate,
+          infringmentType,
+          originCountry,
+          locationRecovered,
+          bondAmount,
+          incID,
+          incidentType,
+          country,
+          totalQTY,
+          dateReported,
+          region,
+          stateprovince,
+          carID,
+        };
+        break;
+      case 'govt-inquiries':
+        tags = {
+          incID,
+          incidentType,
+          country,
+          totalQTY,
+          dateReported,
+          region,
+          stateprovince,
+          carID,
+        };
+        break;
+      default:
+        break;
+    }
+
+    return tags;
+  };
 
   useEffect(() => {
     createTags()
@@ -85,144 +205,67 @@ function FormUpload({ onUploadSuccess }) {
   // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();  // Prevent default form submission
-
+  
     if (!caseInfo || !file || !caseType) {
       alert('Please provide case information, select a case type, and choose a file.');
       return;
     }
-
-    let additionalDetails = '';
-    switch (caseType) {
-      case 'media-inquiries':
-        if (!mediaSource || !incID || !incidentType || 
-          !country || !totalQTY || !dateReported || !region || !stateprovince || 
-          !carID) {
-          alert('Please provide Media Inquiry details and Source.');
-          return;
-        }
-        break;
-      case 'ngo-inquiries':
-        if (!ngoOrganization || !incID || !incidentType || 
-          !country || !totalQTY || !dateReported || !region || !stateprovince || 
-          !carID) {
-          alert('Please provide NGO Inquiry details and the NGO Organization.');
-          return;
-        }
-        break;
-      case 'subpoenas':
-        if (!subpoenaJurisdiction || !subpoenaOpen || !incID || !incidentType || 
-          !country || !totalQTY || !dateReported || !region || !stateprovince || 
-          !carID) {
-          alert('Please provide Subpoena details and Jurisdiction.');
-          return;
-        }
-        break;
-      case 'broker-investigations':
-        if (!incID || !incidentType || 
-          !country || !totalQTY || !dateReported || !region || !stateprovince || 
-          !carID) {
-          alert('Please provide Subpoena details and Jurisdiction.');
-          return;
-        }
-        break;
-      case 'cease-desist':
-        if (!ceaseDesistOpen || !incID || !incidentType || 
-          !country || !totalQTY || !dateReported || !region || !stateprovince || 
-          !carID) {
-          alert('Please provide Media Inquiry details and Source.');
-          return;
-        }
-        break;
-      case 'counterfeit':
-        if (!incID || !incidentType || 
-          !country || !totalQTY || !dateReported || !region || !stateprovince || 
-          !carID) {
-          alert('Please provide NGO Inquiry details and the NGO Organization.');
-          return;
-        }
-        break;
-      case 'customs-seizures':
-        if (!customsPortAgency || !destinationCountry || !seizureDate || !infringmentType 
-          || !originCountry || !locationRecovered || !bondAmount || !incID || !incidentType || !country || !totalQTY || 
-          !dateReported || !region || !stateprovince || !carID) {
-          alert('Please provide all necessary details');
-          return;
-        }
-        break;
-      case 'govt-inquiries':
-        if (!incID || !incidentType || 
-          !country || !totalQTY || !dateReported || !region || !stateprovince || 
-          !carID) {
-          alert('Please provide Subpoena details and Jurisdiction.');
-          return;
-        }
-        break;
-      
-      default:
-        break;
-    }
-
-    if (!additionalDetails) {
-      alert('Please provide specific details for the selected case type.');
-      return;
-    }
-
+  
+    const tags = generateTagsForCaseType();
+  
     setUploading(true);
-
+  
     try {
       // Debugging to see form data before upload
-      console.log("Uploading:", { caseInfo, file, caseType, additionalDetails });
-
+      console.log("Uploading:", { caseInfo, file, caseType, tags });
+  
       // Use your SAS URL here
       const blobSasUrl = 'https://amdupsynctest.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2024-10-21T07:05:13Z&st=2024-10-20T23:05:13Z&spr=https&sig=Ll613EbTgEqf4okzvfCTLkLK%2FYyhaKamHscQELbMiVA%3D';
       const blobServiceClient = new BlobServiceClient(blobSasUrl);
-
+  
       // All uploads are now going into the 'folders' container
       const containerClient = blobServiceClient.getContainerClient('folders'); 
-
+  
       // Create the full path for the file in the format caseType/filename (e.g., ngo-inquiries/file.png)
       const blobPath = `${caseType}/${file.name}`;
       const blobClient = containerClient.getBlockBlobClient(blobPath);
-
-
+  
       const uploadOptions = {
         blobHTTPHeaders: {
           blobContentType: file.type,  // Set the MIME type
         },
         tags: tags
       };
-
+  
       await blobClient.uploadData(
           file,
           uploadOptions,
       );
-
+  
       alert('File uploaded successfully!');
-
+  
       // Clear input fields after successful upload
       setCaseInfo('');
       setFile(null);
       setCaseType('');
-
-      //Clear Universal Fields
+  
+      // Clear Universal Fields
       setincID('');
       setincidentType('');
       setcountry('');
       settotalQTY('');
       setdateReported('');
       setregion('');
-      setregion('');
       setstateprovince('');
       setcarID('');
-
+  
       setMediaSource('');
       setNgoOrganization('');
       setSubpoenaJurisdiction('');
       setSubpoenaOpen('');
       setceaseDesistOpen('');
-      
-
-      //Customs Clear
+  
+      // Customs Clear
       setCustomsPortAgency('');
       setDestinationCountry('');
       setSeizureDate('');
@@ -230,7 +273,7 @@ function FormUpload({ onUploadSuccess }) {
       setOriginCountry('');
       setLocationRecovered('');
       setBondAmount('');
-
+  
       if (onUploadSuccess) {
         onUploadSuccess();  // Trigger refresh callback if provided
       }
