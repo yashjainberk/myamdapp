@@ -1789,30 +1789,6 @@ function FormUpload({ onUploadSuccess }) {
           </TextField>
         </Grid>
 
-        <Grid item xs={12}>
-          {/* Text field for case information */}
-          <TextField
-              label="Tag Name"
-              variant="outlined"
-              fullWidth
-              value={tagName}
-              onChange={(e) => setTagName(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          {/* Text field for case information */}
-          <TextField
-              label="Tag Value"
-              variant="outlined"
-              fullWidth
-              value={tagValue}
-              onChange={(e) => setTagValue(e.target.value)}
-          />
-        </Grid>
-        <Button variant="contained" color="primary" onClick={addTag}>
-            Add Tag
-        </Button>
-
         {/* Render TagNameList and TagValueList */}
         {tagNameList.map((tag, index) => (
           <div key={index}>
