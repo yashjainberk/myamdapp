@@ -43,7 +43,7 @@ function FormUpload({ onUploadSuccess }) {
   const [customsPortAgency, setCustomsPortAgency] = useState('');
   const [destinationCountry, setDestinationCountry] = useState('');
   const [seizureDate, setSeizureDate] = useState('');
-  const [infringementType, setinfringementType] = useState('');
+  const [infringementType, setInfringementType] = useState('');
   const [originCountry, setOriginCountry] = useState('');
   const [locationRecovered, setLocationRecovered] = useState('');
   const [bondAmount, setBondAmount] = useState('');
@@ -376,7 +376,7 @@ function FormUpload({ onUploadSuccess }) {
       case 'media-inquiries':
         return (
           <>
-          <Grid item xs={12}>
+            <Grid item xs={12}>
               <TextField
                 select
                 label="Priority"
@@ -390,15 +390,20 @@ function FormUpload({ onUploadSuccess }) {
                 <MenuItem value="medium">Medium</MenuItem>
                 <MenuItem value="high">High</MenuItem>
               </TextField>
-          </Grid>
-
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Source of Media Inquiry"
                 variant="outlined"
                 fullWidth
                 value={mediaSource}
-                onChange={(e) => setMediaSource(e.target.value)}
+                onChange={(e) => {
+                  setMediaSource(e.target.value); // Update the local state
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    sourceOfMediaInquiry: e.target.value, // Update the tags state
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -408,7 +413,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={incID}
-                onChange={(e) => setincID(e.target.value)}
+                onChange={(e) => {
+                  setincID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -418,7 +429,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={incidentType}
-                onChange={(e) => setincidentType(e.target.value)}
+                onChange={(e) => {
+                  setincidentType(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentType: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -428,7 +445,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={country}
-                onChange={(e) => setcountry(e.target.value)}
+                onChange={(e) => {
+                  setcountry(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    country: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -438,7 +461,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={totalQTY}
-                onChange={(e) => settotalQTY(e.target.value)}
+                onChange={(e) => {
+                  settotalQTY(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    totalQty: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -448,7 +477,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={dateReported}
-                onChange={(e) => setdateReported(e.target.value)}
+                onChange={(e) => {
+                  setdateReported(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    dateReported: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -458,7 +493,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={region}
-                onChange={(e) => setregion(e.target.value)}
+                onChange={(e) => {
+                  setregion(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    region: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -468,7 +509,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={stateprovince}
-                onChange={(e) => setstateprovince(e.target.value)}
+                onChange={(e) => {
+                  setstateprovince(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    stateProvince: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -478,11 +525,16 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={carID}
-                onChange={(e) => setcarID(e.target.value)}
+                onChange={(e) => {
+                  setcarID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    carId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
-
           </>
         );
       case 'ngo-inquiries':
@@ -510,7 +562,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={ngoOrganization}
-                onChange={(e) => setNgoOrganization(e.target.value)}
+                onChange={(e) => {
+                  setNgoOrganization(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    ngoOrganization: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -520,7 +578,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={incID}
-                onChange={(e) => setincID(e.target.value)}
+                onChange={(e) => {
+                  setincID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -530,7 +594,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={incidentType}
-                onChange={(e) => setincidentType(e.target.value)}
+                onChange={(e) => {
+                  setincidentType(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentType: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -540,7 +610,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={country}
-                onChange={(e) => setcountry(e.target.value)}
+                onChange={(e) => {
+                  setcountry(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    country: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -550,7 +626,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={totalQTY}
-                onChange={(e) => settotalQTY(e.target.value)}
+                onChange={(e) => {
+                  settotalQTY(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    totalQty: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -560,7 +642,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={dateReported}
-                onChange={(e) => setdateReported(e.target.value)}
+                onChange={(e) => {
+                  setdateReported(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    dateReported: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -570,7 +658,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={region}
-                onChange={(e) => setregion(e.target.value)}
+                onChange={(e) => {
+                  setregion(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    region: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -580,7 +674,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={stateprovince}
-                onChange={(e) => setstateprovince(e.target.value)}
+                onChange={(e) => {
+                  setstateprovince(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    stateProvince: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -590,7 +690,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={carID}
-                onChange={(e) => setcarID(e.target.value)}
+                onChange={(e) => {
+                  setcarID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    carId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -613,15 +719,20 @@ function FormUpload({ onUploadSuccess }) {
                 <MenuItem value="medium">Medium</MenuItem>
                 <MenuItem value="high">High</MenuItem>
               </TextField>
-          </Grid>
-
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Jurisdiction"
                 variant="outlined"
                 fullWidth
                 value={subpoenaJurisdiction}
-                onChange={(e) => setSubpoenaJurisdiction(e.target.value)}
+                onChange={(e) => {
+                  setSubpoenaJurisdiction(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    jurisdiction: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -631,7 +742,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={subpoenaOpen}
-                onChange={(e) => setSubpoenaOpen(e.target.value)}
+                onChange={(e) => {
+                  setSubpoenaOpen(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    openClosed: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -641,7 +758,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={incID}
-                onChange={(e) => setincID(e.target.value)}
+                onChange={(e) => {
+                  setincID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -651,7 +774,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={incidentType}
-                onChange={(e) => setincidentType(e.target.value)}
+                onChange={(e) => {
+                  setincidentType(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentType: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -661,7 +790,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={country}
-                onChange={(e) => setcountry(e.target.value)}
+                onChange={(e) => {
+                  setcountry(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    country: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -671,7 +806,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={totalQTY}
-                onChange={(e) => settotalQTY(e.target.value)}
+                onChange={(e) => {
+                  settotalQTY(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    totalQty: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -681,7 +822,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={dateReported}
-                onChange={(e) => setdateReported(e.target.value)}
+                onChange={(e) => {
+                  setdateReported(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    dateReported: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -691,7 +838,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={region}
-                onChange={(e) => setregion(e.target.value)}
+                onChange={(e) => {
+                  setregion(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    region: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -701,7 +854,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={stateprovince}
-                onChange={(e) => setstateprovince(e.target.value)}
+                onChange={(e) => {
+                  setstateprovince(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    stateProvince: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -711,7 +870,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={carID}
-                onChange={(e) => setcarID(e.target.value)}
+                onChange={(e) => {
+                  setcarID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    carId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -742,7 +907,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={incID}
-                onChange={(e) => setincID(e.target.value)}
+                onChange={(e) => {
+                  setincID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -752,7 +923,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={incidentType}
-                onChange={(e) => setincidentType(e.target.value)}
+                onChange={(e) => {
+                  setincidentType(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentType: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -762,7 +939,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={country}
-                onChange={(e) => setcountry(e.target.value)}
+                onChange={(e) => {
+                  setcountry(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    country: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -772,7 +955,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={totalQTY}
-                onChange={(e) => settotalQTY(e.target.value)}
+                onChange={(e) => {
+                  settotalQTY(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    totalQty: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -782,7 +971,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={dateReported}
-                onChange={(e) => setdateReported(e.target.value)}
+                onChange={(e) => {
+                  setdateReported(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    dateReported: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -792,7 +987,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={region}
-                onChange={(e) => setregion(e.target.value)}
+                onChange={(e) => {
+                  setregion(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    region: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -802,7 +1003,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={stateprovince}
-                onChange={(e) => setstateprovince(e.target.value)}
+                onChange={(e) => {
+                  setstateprovince(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    stateProvince: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -812,7 +1019,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={carID}
-                onChange={(e) => setcarID(e.target.value)}
+                onChange={(e) => {
+                  setcarID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    carId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -842,18 +1055,29 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={ceaseDesistOpen}
-                onChange={(e) => setceaseDesistOpen(e.target.value)}
+                onChange={(e) => {
+                  setceaseDesistOpen(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    openClosed: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
-            
             <Grid item xs={12}>
               <TextField
                 label="Incident ID"
                 variant="outlined"
                 fullWidth
                 value={incID}
-                onChange={(e) => setincID(e.target.value)}
+                onChange={(e) => {
+                  setincID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -863,7 +1087,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={incidentType}
-                onChange={(e) => setincidentType(e.target.value)}
+                onChange={(e) => {
+                  setincidentType(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentType: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -873,7 +1103,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={country}
-                onChange={(e) => setcountry(e.target.value)}
+                onChange={(e) => {
+                  setcountry(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    country: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -883,7 +1119,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={totalQTY}
-                onChange={(e) => settotalQTY(e.target.value)}
+                onChange={(e) => {
+                  settotalQTY(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    totalQty: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -893,7 +1135,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={dateReported}
-                onChange={(e) => setdateReported(e.target.value)}
+                onChange={(e) => {
+                  setdateReported(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    dateReported: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -903,7 +1151,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={region}
-                onChange={(e) => setregion(e.target.value)}
+                onChange={(e) => {
+                  setregion(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    region: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -913,7 +1167,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={stateprovince}
-                onChange={(e) => setstateprovince(e.target.value)}
+                onChange={(e) => {
+                  setstateprovince(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    stateProvince: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -923,7 +1183,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={carID}
-                onChange={(e) => setcarID(e.target.value)}
+                onChange={(e) => {
+                  setcarID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    carId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -953,7 +1219,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={incID}
-                onChange={(e) => setincID(e.target.value)}
+                onChange={(e) => {
+                  setincID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -963,7 +1235,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={incidentType}
-                onChange={(e) => setincidentType(e.target.value)}
+                onChange={(e) => {
+                  setincidentType(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentType: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -973,7 +1251,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={country}
-                onChange={(e) => setcountry(e.target.value)}
+                onChange={(e) => {
+                  setcountry(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    country: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -983,7 +1267,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={totalQTY}
-                onChange={(e) => settotalQTY(e.target.value)}
+                onChange={(e) => {
+                  settotalQTY(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    totalQty: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -993,7 +1283,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={dateReported}
-                onChange={(e) => setdateReported(e.target.value)}
+                onChange={(e) => {
+                  setdateReported(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    dateReported: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1003,7 +1299,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={region}
-                onChange={(e) => setregion(e.target.value)}
+                onChange={(e) => {
+                  setregion(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    region: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1013,7 +1315,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={stateprovince}
-                onChange={(e) => setstateprovince(e.target.value)}
+                onChange={(e) => {
+                  setstateprovince(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    stateProvince: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1023,7 +1331,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={carID}
-                onChange={(e) => setcarID(e.target.value)}
+                onChange={(e) => {
+                  setcarID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    carId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1053,7 +1367,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={customsPortAgency}
-                onChange={(e) => setCustomsPortAgency(e.target.value)}
+                onChange={(e) => {
+                  setCustomsPortAgency(e.target.value); // Update the local state
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    customsPortAgency: e.target.value, // Update the tags state
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1063,7 +1383,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={destinationCountry}
-                onChange={(e) => setDestinationCountry(e.target.value)}
+                onChange={(e) => {
+                  setDestinationCountry(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    destinationCountry: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1073,7 +1399,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={seizureDate}
-                onChange={(e) => setSeizureDate(e.target.value)}
+                onChange={(e) => {
+                  setSeizureDate(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    seizureDate: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1083,7 +1415,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={infringementType}
-                onChange={(e) => setinfringementType(e.target.value)}
+                onChange={(e) => {
+                  setInfringementType(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    infringementType: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1093,7 +1431,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={originCountry}
-                onChange={(e) => setOriginCountry(e.target.value)}
+                onChange={(e) => {
+                  setOriginCountry(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    originCountry: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1103,7 +1447,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={locationRecovered}
-                onChange={(e) => setLocationRecovered(e.target.value)}
+                onChange={(e) => {
+                  setLocationRecovered(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    locationRecovered: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1113,18 +1463,29 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={bondAmount}
-                onChange={(e) => setBondAmount(e.target.value)}
+                onChange={(e) => {
+                  setBondAmount(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    bondAmount: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
-
             <Grid item xs={12}>
               <TextField
                 label="Incident ID"
                 variant="outlined"
                 fullWidth
                 value={incID}
-                onChange={(e) => setincID(e.target.value)}
+                onChange={(e) => {
+                  setincID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1134,7 +1495,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={incidentType}
-                onChange={(e) => setincidentType(e.target.value)}
+                onChange={(e) => {
+                  setincidentType(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    incidentType: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1144,7 +1511,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={country}
-                onChange={(e) => setcountry(e.target.value)}
+                onChange={(e) => {
+                  setcountry(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    country: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1154,7 +1527,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={totalQTY}
-                onChange={(e) => settotalQTY(e.target.value)}
+                onChange={(e) => {
+                  settotalQTY(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    totalQty: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1164,7 +1543,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={dateReported}
-                onChange={(e) => setdateReported(e.target.value)}
+                onChange={(e) => {
+                  setdateReported(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    dateReported: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1174,7 +1559,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={region}
-                onChange={(e) => setregion(e.target.value)}
+                onChange={(e) => {
+                  setregion(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    region: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1184,7 +1575,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={stateprovince}
-                onChange={(e) => setstateprovince(e.target.value)}
+                onChange={(e) => {
+                  setstateprovince(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    stateProvince: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1194,18 +1591,13 @@ function FormUpload({ onUploadSuccess }) {
                 variant="outlined"
                 fullWidth
                 value={carID}
-                onChange={(e) => setcarID(e.target.value)}
-                required
-              />
-            </Grid>
-            
-            <Grid item xs={12}>
-              <TextField
-                label="CAR ID"
-                variant="outlined"
-                fullWidth
-                value={carID}
-                onChange={(e) => setcarID(e.target.value)}
+                onChange={(e) => {
+                  setcarID(e.target.value);
+                  setTags((prevTags) => ({
+                    ...prevTags,
+                    carId: e.target.value,
+                  }));
+                }}
                 required
               />
             </Grid>
@@ -1229,86 +1621,134 @@ function FormUpload({ onUploadSuccess }) {
                 <MenuItem value="high">High</MenuItem>
               </TextField>
           </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Incident ID"
-                variant="outlined"
-                fullWidth
-                value={incID}
-                onChange={(e) => setincID(e.target.value)}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Incident Type"
-                variant="outlined"
-                fullWidth
-                value={incidentType}
-                onChange={(e) => setincidentType(e.target.value)}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Country"
-                variant="outlined"
-                fullWidth
-                value={country}
-                onChange={(e) => setcountry(e.target.value)}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Total QTY of Parts"
-                variant="outlined"
-                fullWidth
-                value={totalQTY}
-                onChange={(e) => settotalQTY(e.target.value)}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Date Reported"
-                variant="outlined"
-                fullWidth
-                value={dateReported}
-                onChange={(e) => setdateReported(e.target.value)}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Region"
-                variant="outlined"
-                fullWidth
-                value={region}
-                onChange={(e) => setregion(e.target.value)}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="State/Province"
-                variant="outlined"
-                fullWidth
-                value={stateprovince}
-                onChange={(e) => setstateprovince(e.target.value)}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="CAR ID"
-                variant="outlined"
-                fullWidth
-                value={carID}
-                onChange={(e) => setcarID(e.target.value)}
-                required
-              />
-            </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Incident ID"
+              variant="outlined"
+              fullWidth
+              value={incID}
+              onChange={(e) => {
+                setincID(e.target.value);
+                setTags((prevTags) => ({
+                  ...prevTags,
+                  incidentId: e.target.value,
+                }));
+              }}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Incident Type"
+              variant="outlined"
+              fullWidth
+              value={incidentType}
+              onChange={(e) => {
+                setincidentType(e.target.value);
+                setTags((prevTags) => ({
+                  ...prevTags,
+                  incidentType: e.target.value,
+                }));
+              }}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Country"
+              variant="outlined"
+              fullWidth
+              value={country}
+              onChange={(e) => {
+                setcountry(e.target.value);
+                setTags((prevTags) => ({
+                  ...prevTags,
+                  country: e.target.value,
+                }));
+              }}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Total QTY of Parts"
+              variant="outlined"
+              fullWidth
+              value={totalQTY}
+              onChange={(e) => {
+                settotalQTY(e.target.value);
+                setTags((prevTags) => ({
+                  ...prevTags,
+                  totalQty: e.target.value,
+                }));
+              }}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Date Reported"
+              variant="outlined"
+              fullWidth
+              value={dateReported}
+              onChange={(e) => {
+                setdateReported(e.target.value);
+                setTags((prevTags) => ({
+                  ...prevTags,
+                  dateReported: e.target.value,
+                }));
+              }}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Region"
+              variant="outlined"
+              fullWidth
+              value={region}
+              onChange={(e) => {
+                setregion(e.target.value);
+                setTags((prevTags) => ({
+                  ...prevTags,
+                  region: e.target.value,
+                }));
+              }}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="State/Province"
+              variant="outlined"
+              fullWidth
+              value={stateprovince}
+              onChange={(e) => {
+                setstateprovince(e.target.value);
+                setTags((prevTags) => ({
+                  ...prevTags,
+                  stateProvince: e.target.value,
+                }));
+              }}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="CAR ID"
+              variant="outlined"
+              fullWidth
+              value={carID}
+              onChange={(e) => {
+                setcarID(e.target.value);
+                setTags((prevTags) => ({
+                  ...prevTags,
+                  carId: e.target.value,
+                }));
+              }}
+              required
+            />
+          </Grid>
           </>
         );
       default:
