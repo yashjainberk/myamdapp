@@ -103,7 +103,7 @@ function App() {
   const createTagInfo = (data) => {
     const valueMap = {};
     const allKeys = new Set();
-
+    
     Object.values(data.folders).forEach(folder => {
       folder.files.forEach(file => {
         if (file.tags) {
