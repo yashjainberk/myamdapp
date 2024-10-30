@@ -23,6 +23,7 @@ import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import './App.css';
 import FormUpload from './components/FormUpload'; // Import FormUpload component
+import TagFilter from "./components/TagFilter";
 
 // Create a custom theme with AMD color scheme
 const theme = createTheme({
@@ -94,6 +95,39 @@ function App() {
   const [loadingPdf, setLoadingPdf] = useState(false); // Loading state for PDFs
   const [searchValue, setSearchValue] = useState(''); // State for search value
   const [inputValue, setInputValue] = useState(''); // State for search input
+  const [activeFilters, setActiveFilters] = useState({}); // State for filter
+  const [tagInfo, setTagInfo] = useState({ valueMap: {}, allKeys: [] }); // State for tag value map
+  const [filteredFiles, setFilteredFiles] = useState(null); // State for filtered files
+
+  // Enhanced function to create tag value map and list of all keys
+  const createTagInfo = (data) => {
+    const valueMap = {};
+    const allKeys = new Set();
+
+    Object.values(data.folders).forEach(folder => {
+      folder.files.forEach(file => {
+        if (file.tags) {
+          Object.entries(file.tags).forEach(([key, value]) => {
+            if (!valueMap[key]) {
+              valueMap[key] = new Set();
+            }
+            valueMap[key].add(value);
+            allKeys.add(key);
+          });
+        }
+      });
+    });
+
+    // Convert Sets to Arrays
+    Object.keys(valueMap).forEach(key => {
+      valueMap[key] = Array.from(valueMap[key]);
+    });
+
+    return {
+      valueMap,
+      allKeys: Array.from(allKeys)
+    };
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -137,6 +171,7 @@ function App() {
         folderName,
         fileName: file.file_name,
         createdOn: file.created_on,
+        tags: file.tags || {},
       }))
     );
   };
@@ -173,6 +208,39 @@ function App() {
       .finally(() => {
         setLoadingPdf(false);
       });
+  };
+
+
+  const handleFilterChange = (newFilters) => {
+    setActiveFilters(newFilters);
+    applyFiltersAndSearch(newFilters, searchValue);
+  };
+
+  const handleSearchChange = (newValue) => {
+    setSearchValue(newValue);
+    applyFiltersAndSearch(activeFilters, newValue);
+  };
+
+  const applyFiltersAndSearch = (filters, search) => {
+    let result = getAllFiles();
+
+    // Apply filters
+    if (Object.keys(filters).length > 0) {
+      result = result.filter(file =>
+          Object.entries(filters).every(([key, values]) =>
+              values.includes(file.tags[key])
+          )
+      );
+    }
+
+    // Apply search
+    if (search) {
+      result = result.filter(file =>
+          file.fileName.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    setFilteredFiles(result);
   };
 
   const handleSearch = () => {
@@ -277,8 +345,16 @@ function App() {
                   >
                     Search
                   </Button>
-                </Box>
+                  
+                  <Box sx={{ padding: theme.spacing(1) }}>
+                  </Box>
 
+                  
+                  
+                </Box>
+                <Box  sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                <TagFilter tagInfo={tagInfo} onFilterChange={handleFilterChange} /> 
+                </Box>
                 {/* Display Folder Contents */}
                 {loading ? (
                   <CircularProgress />
