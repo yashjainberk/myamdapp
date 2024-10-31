@@ -9,6 +9,26 @@ import {
     Select
 } from '@mui/material';
 
+const tagInfo = {
+    allKeys: ['priority', 'caseID'], // Add your tags here
+    valueMap: {
+        priority: ['High', 'Medium', 'Low'],
+        caseID: ['1234', '5678', '91011'], // Sample values for each tag
+    },
+};
+
+const handleFilterChange = (filters) => {
+    console.log('Active Filters:', filters);
+};
+
+function App() {
+    return (
+        <div className="App">
+            <TagFilter tagInfo={tagInfo} onFilterChange={handleFilterChange} />
+        </div>
+    );
+}
+
 const TagFilter = ({ tagInfo, onFilterChange }) => {
     const [selectedKey, setSelectedKey] = useState('');
     const [activeFilters, setActiveFilters] = useState({});
@@ -47,7 +67,8 @@ const TagFilter = ({ tagInfo, onFilterChange }) => {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <FormControl fullWidth>
                 <InputLabel>Select Tag</InputLabel>
-                <Select  style={{ width: '300px' }}
+                <Select
+                    style={{ width: '300px' }}
                     value={selectedKey}
                     onChange={handleKeyChange}
                     input={<OutlinedInput label="Select Tag" />}
@@ -63,7 +84,8 @@ const TagFilter = ({ tagInfo, onFilterChange }) => {
             {selectedKey && (
                 <FormControl fullWidth>
                     <InputLabel>Select Value</InputLabel>
-                    <Select style={{ width: '300px' }}
+                    <Select
+                        style={{ width: '300px' }}
                         multiple
                         value={activeFilters[selectedKey] || []}
                         onChange={handleValueChange}
@@ -76,7 +98,7 @@ const TagFilter = ({ tagInfo, onFilterChange }) => {
                             </Box>
                         )}
                     >
-                        {tagInfo.valueMap[selectedKey].map((value) => (
+                        {tagInfo.valueMap[selectedKey]?.map((value) => (
                             <MenuItem key={value} value={value}>
                                 {value}
                             </MenuItem>
@@ -100,4 +122,4 @@ const TagFilter = ({ tagInfo, onFilterChange }) => {
     );
 };
 
-export default TagFilter;
+export default App;
