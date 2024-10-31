@@ -296,7 +296,7 @@ function FormUpload({ onUploadSuccess }) {
       const containerClient = blobServiceClient.getContainerClient('folders'); 
 
       // Create the full path for the file in the format caseType/filename (e.g., ngo-inquiries/file.png)
-      const blobPath = `${caseType}/${file.name}`;
+      const blobPath = `${caseType}/${incID}/${file.name}`;
       const blobClient = containerClient.getBlockBlobClient(blobPath);
 
 

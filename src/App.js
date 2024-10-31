@@ -90,6 +90,8 @@ function App() {
   const [loading, setLoading] = useState(true); // State to manage loading
   const [open, setOpen] = useState(false); // Sidebar state
   const [selectedFolder, setSelectedFolder] = useState(null); // Store selected folder data
+  const [selectedSubfolder, setSelectedSubfolder] = useState(null);
+  const [selectedIncidentID, setSelectedIncidentID] = useState(null);
   const [fileContent, setFileContent] = useState(null); // Store file content
   const [fileType, setFileType] = useState(null); // Store the type of file
   const [loadingPdf, setLoadingPdf] = useState(false); // Loading state for PDFs
@@ -164,21 +166,54 @@ function App() {
       .sort((a, b) => new Date(a.creationTime) - new Date(b.creationTime));
   };
 
+ 
   const getAllFiles = () => {
-    if (!data) return [];
-    return Object.entries(data.folders).flatMap(([folderName, folderDetails]) =>
-      folderDetails.files.map((file) => ({
-        folderName,
-        fileName: file.file_name,
-        createdOn: file.created_on,
-        tags: file.tags || {},
-      }))
-    );
+    if (!data || !data.folders) {
+      console.log("No data or folders found");
+      return [];
+    }
+
+
+    return Object.entries(data.folders).flatMap(([folderName, subfolderDetails]) => {
+      return Object.entries(subfolderDetails).flatMap(([subfolderName, filesInfo]) => {
+        if (!filesInfo.files) return []; // Check if files exist
+        if (!filesInfo || !Array.isArray(filesInfo.files)) {
+          console.log(`No files found in subfolder: ${subfolderName}`);
+          return []; // Return empty if no files exist
+        }
+
+
+        return filesInfo.files.map((file) => ({
+          folderName,
+          subfolderName, // Add the subfolder name
+          fileName: file.file_name, // Extract file name
+          createdOn: file.created_on,
+          tags: file.tags || {}, // Ensure tags are provided
+        }));
+      });
+    });
   };
+
+  /*const organizedFiles = () => {
+    const filesByIncident = {};
+    if (!data) return filesByIncident;
+
+    Object.entries(data.folders).forEach(([folderName, folderDetails]) => {
+      folderDetails.files.forEach((file) => {
+        const [incidentID, fileName] = file.file_name.split('/');
+        if (!filesByIncident[incidentID]) {
+          filesByIncident[incidentID] = [];
+        }
+        filesByIncident[incidentID].push({ fileName, ...file });
+      });
+    });
+    return filesByIncident;
+  };
+
+  const incidentFiles = organizedFiles(); */
 
   const fetchFile = (filePath, fileExtension) => {
     setLoadingPdf(true);
-
     fetch(filePath)
       .then((response) => {
         if (!response.ok) {
@@ -247,8 +282,10 @@ function App() {
     const allFiles = getAllFiles();
     const selectedFile = allFiles.find((file) => file.fileName === searchValue);
     if (selectedFile) {
+      console.log('selectedfile:', selectedFile)
       const { folderName, fileName } = selectedFile;
-      setSelectedFolder(data.folders[folderName]); // Set selected folder based on search
+      setSelectedFolder(selectedFile.folderName); // Set selected folder based on search
+      console.log('selfdsectedfolder:', selectedFolder);
       fetchFile(
         `https://amdupsynctest.blob.core.windows.net/folders/${fileName}`,
         fileName.split('.').pop().toLowerCase()
@@ -257,6 +294,7 @@ function App() {
   };
 
   return (
+    
     <ThemeProvider theme={theme}>
       <CssBaseline /> {/* Normalize CSS */}
       <AppBar position="static" sx={{ backgroundColor: theme.palette.primary.main }}>
@@ -360,12 +398,12 @@ function App() {
                   <CircularProgress />
                 ) : (
                   <Grid container spacing={3}>
-                    {data && Object.keys(data.folders).map((key, index) => (
+                    {data && Object.keys(data.folders).map((folderName, index) => (
                       <Grid item xs={12} sm={6} md={4} key={index}>
-                        <FolderCard onClick={() => setSelectedFolder(data.folders[key])}>
+                        <FolderCard onClick={() => setSelectedFolder(folderName)}>
                           <CardActionArea>
                             <CardContent>
-                              <Typography variant="h6">{key}</Typography>
+                              <Typography variant="h6">{folderName}</Typography>
                               <Typography variant="body2">Click to view folder contents</Typography>
                             </CardContent>
                           </CardActionArea>
@@ -375,63 +413,87 @@ function App() {
                   </Grid>
                 )}
 
-                {/* Render Folder Contents */}
-                {selectedFolder && (
+                {/* Render Subfolders */}
+                {selectedFolder && data.folders[selectedFolder] && (
                   <Box mt={5}>
-                    <Typography variant="h5">Folder Contents</Typography>
+                    <Typography variant="h5">Subfolders</Typography>
                     <Grid container spacing={3}>
-                      {selectedFolder.files.map((file, index) => {
-                        const fileExtension = file.file_name.split('.').pop().toLowerCase();
-                        const filePath = `https://amdupsynctest.blob.core.windows.net/folders/${file.file_name}`;
-
-                        let FileIcon;
-                        if (fileExtension === 'pdf') {
-                          FileIcon = <PictureAsPdfIcon />;
-                        } else if (fileExtension.match(/(png|jpg|jpeg)/)) {
-                          FileIcon = <ImageIcon />;
-                        } else {
-                          FileIcon = <TextSnippetIcon />;
-                        }
-
-                        return (
-                          <Grid item xs={12} sm={6} md={4} key={index}>
-                            <Card
-                              sx={{
-                                backgroundColor: '#ffffff',
-                                borderRadius: theme.shape.borderRadius,
-                                boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.12)',
-                              }}
-                            >
-                              <CardActionArea onClick={() => fetchFile(filePath, fileExtension)}>
-                                <CardContent sx={{ textAlign: 'center' }}>
-                                  {FileIcon}
-                                  <Typography variant="body2" mt={2}>{file.file_name}</Typography>
-                                  <Typography variant="caption">Created: {formatDate(file.created_on)}</Typography>
-                                </CardContent>
-                              </CardActionArea>
-                            </Card>
-                          </Grid>
-                        );
-                      })}
+                      {Object.entries(data.folders[selectedFolder]).map(([subfolderName, filesInfo]) => (
+                        <Grid item xs={12} sm={6} md={4} key={subfolderName}>
+                          {/* Click to set the selected subfolder */}
+                          <FolderCard onClick={() => setSelectedSubfolder(subfolderName)}>
+                            <CardActionArea>
+                              <CardContent>
+                                <Typography variant="h6">{subfolderName}</Typography>
+                                <Typography variant="body2">Click to view files</Typography>
+                              </CardContent>
+                            </CardActionArea>
+                          </FolderCard>
+                        </Grid>
+                      ))}
                     </Grid>
 
-                    {/* File Viewer */}
-                    <Box mt={5} sx={{ backgroundColor: '#f9f9f9', borderRadius: theme.shape.borderRadius, padding: 2 }}>
-                      {loadingPdf ? (
-                        <Typography>Loading file...</Typography>
-                      ) : fileType === 'pdf' && fileContent ? (
-                        <embed src={fileContent} type="application/pdf" width="100%" height="600px" />
-                      ) : fileType === 'image' && fileContent ? (
-                        <img src={fileContent} alt="file content" style={{ maxWidth: '100%', borderRadius: 8 }} />
-                      ) : fileType === 'txt' && fileContent ? (
-                        <pre style={{ whiteSpace: 'pre-wrap' }}>{fileContent}</pre>
-                      ) : (
-                        <Typography>Select a file to view.</Typography>
-                      )}
-                    </Box>
+                    {/* Render Files in Selected Subfolder */}
+                    {selectedSubfolder && data.folders[selectedFolder][selectedSubfolder] && (
+                      <Box mt={5}>
+                        <Typography variant="h5">Files in {selectedSubfolder}</Typography>
+                        <Grid container spacing={3}>
+                          {data.folders[selectedFolder][selectedSubfolder].files.map((file, index) => {
+                            const fileExtension = file.file_name.split('.').pop().toLowerCase();
+                            const filePath = `https://amdupsynctest.blob.core.windows.net/folders/${file.file_name}`;
+                            
+                            let FileIcon;
+                            if (fileExtension === 'pdf') {
+                              FileIcon = <PictureAsPdfIcon />;
+                            } else if (fileExtension.match(/(png|jpg|jpeg)/)) {
+                              FileIcon = <ImageIcon />;
+                            } else {
+                              FileIcon = <TextSnippetIcon />;
+                            }
+                            
+                            return (
+                              <Grid item xs={12} sm={6} md={4} key={index}>
+                                <Card
+                                  sx={{
+                                    backgroundColor: '#ffffff',
+                                    borderRadius: theme.shape.borderRadius,
+                                    boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.12)',
+                                  }}
+                                >
+                                  <CardActionArea onClick={() => fetchFile(filePath, fileExtension)}>
+                                    <CardContent sx={{ textAlign: 'center' }}>
+                                      {FileIcon}
+                                      <Typography variant="body2" mt={2}>{file.file_name}</Typography>
+                                      <Typography variant="caption">Created: {formatDate(file.created_on)}</Typography>
+                                    </CardContent>
+                                  </CardActionArea>
+                                </Card>
+                              </Grid>
+                            );
+                          })}
+                        </Grid>
+                      </Box>
+                    )}
+                  
+
                   </Box>
                 )}
 
+                {/* File Viewer */}
+                <Box mt={5} sx={{ backgroundColor: '#f9f9f9', borderRadius: theme.shape.borderRadius, padding: 2 }}>
+                  {loadingPdf ? (
+                    <Typography>Loading file...</Typography>
+                  ) : fileType === 'pdf' && fileContent ? (
+                    <embed src={fileContent} type="application/pdf" width="100%" height="600px" />
+                  ) : fileType === 'image' && fileContent ? (
+                    <img src={fileContent} alt="file content" style={{ maxWidth: '100%', borderRadius: 8 }} />
+                  ) : fileType === 'txt' && fileContent ? (
+                    <pre style={{ whiteSpace: 'pre-wrap' }}>{fileContent}</pre>
+                  ) : (
+                    <Typography>Select a file to view.</Typography>
+                  )}
+                </Box>
+                  
                 {/* Timeline Component */}
                 {data && (
                   <Box mt={5}>
