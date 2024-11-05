@@ -245,6 +245,18 @@ function App() {
       });
   };
 
+  const fetchIncident = async (incidentID) => {
+      try {
+      const response = await axios.get(
+          'https://amdxupsyncfinal.azurewebsites.net/api/RetrieveFromID?code=IXcwYoF61vgHfRUJn1CqgNEzfEx1srVDIMYo6l28PiW0AzFu5GDwDA%3D%3D',
+          { params: { IncID: incidentID } }
+      );
+      return response.data;
+      } catch (error) {
+      console.error('Error fetching incident:', error);
+      }
+  };
+
 
   const handleFilterChange = (newFilters) => {
     setActiveFilters(newFilters);
