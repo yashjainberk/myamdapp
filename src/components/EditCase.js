@@ -76,22 +76,40 @@ function EditCase({ onEditSuccess }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Placeholder for API call or logic to save the field changes
-    editFields.forEach(({ selectedField, editValue }) => {
-      console.log(`Updating ${selectedField} for Incident ID ${incID} with value:`, editValue);
-    });
+    try {
+      {/*CHANGE URL*/}
+      const response = await fetch('https://amdxupsyncfinal.azurewebsites.net/api/edit_incident?code=IXcwYoF61vgHfRUJn1CqgNEzfEx1srVDIMYo6l28PiW0AzFu5GDwDA%3D%3D', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ incID, editFields }),
+      });
 
-    alert(`Fields updated successfully for Incident ID "${incID}"!`);
+      const data = await response.json();
 
-    if (onEditSuccess) {
-      onEditSuccess();  // Trigger refresh callback if provided
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update incident');
+      }
+
+      // Notify user of success
+      alert(`Fields updated successfully for Incident ID "${incID}"!`);
+
+      // Trigger callback if provided
+      if (onEditSuccess) {
+        onEditSuccess();
+      }
+
+      // Reset form fields
+      setIncID('');
+      setEditFields([]);
+      setShowEditOptions(false);
+
+    } catch (err) {
+      setError(err.message);
     }
-
-    // Clear the form after submission
-    setEditFields([]);
-    setShowEditOptions(false);
-    setIncID('');
   };
+
 
   return (
     <form onSubmit={handleSubmit}>
