@@ -318,6 +318,14 @@ function App() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Product Compliance
           </Typography>
+          {/* Button to Create new Case*/}
+          <Button color="inherit" component={Link} to="/create-case">
+            Create Case
+          </Button>
+          {/* Create a button to edit the case */}
+          <Button color="inherit" component={Link} to="/edit-case">
+              Edit Case
+          </Button>
           {/* Add a button to navigate to the file upload page */}
           <Button color="inherit" component={Link} to="/upload">
             Upload File
@@ -574,6 +582,14 @@ function App() {
           <Route
             path="/upload"
             element={<FileUpload />}
+          />
+          <Route
+            path="/create-case"
+            element={<CreateCase />}
+          />
+          <Route
+              path="/edit-case"
+              element={<EditCase />}
           />
         </Routes>
       </Box>
