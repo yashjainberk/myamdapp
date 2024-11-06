@@ -1,7 +1,7 @@
 import {Grid, MenuItem, TextField} from "@mui/material";
 import React from "react";
 
-export default function GovtInquiries({ tags, setTags, incID, setincID, incidentType, setincidentType, country, setcountry, totalQTY, settotalQTY, dateReported, setdateReported, region, setregion, stateprovince, setstateprovince, car}) {
+export default function GovtInquiries({ tags, setTags, incID, setincID, incidentType, setincidentType, country, setcountry, totalQTY, settotalQTY, dateReported, setdateReported, region, setregion, stateprovince, setstateprovince, carID, setcarID}) {
     return (
         <>
             <Grid item xs={12}>
