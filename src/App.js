@@ -588,10 +588,10 @@ function App() {
             path="/create-case"
             element={<CreateCase />}
           />
-          <Route
+          {/* <Route
               path="/edit-case"
               element={<EditCase />}
-          />
+          /> */}
         </Routes>
       </Box>
     </ThemeProvider>
