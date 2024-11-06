@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, Button, Grid, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
-import { BlobServiceClient } from "@azure/storage-blob";
-import FormUpload from './FormUpload';
+import React, { useState } from 'react';
+import { TextField, Button, Grid, MenuItem } from '@mui/material';
 
 function CreateCase({ onUploadSuccess }) {
   const [caseInfo, setCaseInfo] = useState('');  // State for case information input
@@ -49,69 +47,67 @@ function CreateCase({ onUploadSuccess }) {
   };
 
   // Handle form submission
-  const handleSubmit = async (event) => {
-    event.preventDefault();  // Prevent default form submission
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-    if (!caseInfo || !file || !caseType) {
-      alert('Please provide case information, select a case type, and choose a file.');
-      return;
-    }
+        if (!incID || !dateReported || !incidentType) {
+            alert('Please provide all required fields.');
+            return;
+        }
 
-    const tags = {
-      incID,
-      dateReported,
-      incidentType,
-      totalQTY,
-      region,
-      country,
-      stateProvince,
-      carID,
-      customsPortAgency,
-      destinationCountry,
-      originCountry,
-      locationRecovered,
-      seizureDate,
-      bondAmount,
-      infringementType,
-      subpoena: subpoena.toString(),
-      subpoenaOpen: subpoenaOpen.toString(),
-      ceaseDesist: ceaseDesist.toString(),
-      ceaseDesistOpen: ceaseDesistOpen.toString(),
-      dueDiligence: dueDiligence.toString(),
-      enhanced: enhanced.toString(),
-      image: image.toString(),
-      notes,
+        setUploading(true);
+
+        try {
+            const data = {
+                incID,
+                dateReported,
+                incidentType,
+                totalQTY,
+                region,
+                country,
+                stateProvince,
+                carID,
+                customsPortAgency,
+                destinationCountry,
+                originCountry,
+                locationRecovered,
+                seizureDate,
+                bondAmount,
+                infringementType,
+                subpoena: subpoena.toString(),
+                subpoenaOpen: subpoenaOpen.toString(),
+                ceaseDesist: ceaseDesist.toString(),
+                ceaseDesistOpen: ceaseDesistOpen.toString(),
+                dueDiligence: dueDiligence.toString(),
+                enhanced: enhanced.toString(),
+                image: image.toString(),
+                notes,
+            };
+
+            {/* Change URL */}
+            const response = await fetch('https://amdxupsyncfinal.azurewebsites.net/api/incident_upload?code=IXcwYoF61vgHfRUJn1CqgNEzfEx1srVDIMYo6l28PiW0AzFu5GDwDA%3D%3D', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            alert('Entry created successfully!');
+            // Reset form or handle success
+            onUploadSuccess && onUploadSuccess();
+        } catch (error) {
+            console.error('Error creating entry:', error);
+            alert('Error creating entry. Please try again.');
+        } finally {
+            setUploading(false);
+        }
     };
-
-    setUploading(true);
-
-    try {
-      const blobSasUrl = 'https://amdupsynctest.blob.core.windows.net/...';  // SAS URL here
-      const blobServiceClient = new BlobServiceClient(blobSasUrl);
-      const containerClient = blobServiceClient.getContainerClient('folders');
-      const blobPath = `${caseType}/${incID}/${file.name}`;
-      const blobClient = containerClient.getBlockBlobClient(blobPath);
-
-      const uploadOptions = {
-        blobHTTPHeaders: {
-          blobContentType: file.type,
-        },
-        tags,
-      };
-
-      await blobClient.uploadData(file, uploadOptions);
-      alert('File uploaded successfully!');
-      setCaseInfo('');
-      setFile(null);
-      setCaseType('');
-      onUploadSuccess && onUploadSuccess();
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      alert('Error uploading file. Please try again.');
-    } finally {
-      setUploading(false);
-    }
-  };
 
   return (
     <form onSubmit={handleSubmit}>
