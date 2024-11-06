@@ -36,6 +36,7 @@ function CreateCase({ onUploadSuccess }) {
 
   // Additional Boolean Fields
   const [dueDiligence, setDueDiligence] = useState(false);
+  const [enhancedDueDiligence, setEnhancedDueDiligence] = useState(false);
   const [enhanced, setEnhanced] = useState(false);
   const [image, setImage] = useState(false);
 
@@ -152,61 +153,76 @@ function CreateCase({ onUploadSuccess }) {
 
         {/* Customs Fields */}
         <Grid item xs={6}>
-          <TextField label="Customs Port/Agency" variant="outlined" fullWidth value={customsPortAgency} onChange={(e) => setCustomsPortAgency(e.target.value)} />
+            <TextField label="Customs Port/Agency" variant="outlined" fullWidth value={customsPortAgency} onChange={(e) => setCustomsPortAgency(e.target.value)} />
         </Grid>
         <Grid item xs={6}>
-          <TextField label="Country of Destination" variant="outlined" fullWidth value={destinationCountry} onChange={(e) => setDestinationCountry(e.target.value)} />
+            <TextField label="Country of Destination" variant="outlined" fullWidth value={destinationCountry} onChange={(e) => setDestinationCountry(e.target.value)} />
         </Grid>
         <Grid item xs={6}>
-          <TextField label="Country of Origin" variant="outlined" fullWidth value={originCountry} onChange={(e) => setOriginCountry(e.target.value)} />
+            <TextField label="Country of Origin" variant="outlined" fullWidth value={originCountry} onChange={(e) => setOriginCountry(e.target.value)} />
         </Grid>
         <Grid item xs={6}>
-          <TextField label="Location Recovered" variant="outlined" fullWidth value={locationRecovered} onChange={(e) => setLocationRecovered(e.target.value)} />
+            <TextField label="Location Recovered" variant="outlined" fullWidth value={locationRecovered} onChange={(e) => setLocationRecovered(e.target.value)} />
         </Grid>
         <Grid item xs={6}>
-          <TextField label="Seizure Date" type="date" InputLabelProps={{ shrink: true }} variant="outlined" fullWidth value={seizureDate} onChange={(e) => setSeizureDate(e.target.value)} />
+            <TextField label="Seizure Date" type="date" InputLabelProps={{ shrink: true }} variant="outlined" fullWidth value={seizureDate} onChange={(e) => setSeizureDate(e.target.value)} />
         </Grid>
         <Grid item xs={6}>
-          <TextField label="Bond Amount" variant="outlined" fullWidth value={bondAmount} onChange={(e) => setBondAmount(e.target.value)} />
+            <TextField label="Bond Amount" variant="outlined" fullWidth value={bondAmount} onChange={(e) => setBondAmount(e.target.value)} />
         </Grid>
         <Grid item xs={6}>
-          <TextField label="Customs IPR Infringement Type" variant="outlined" fullWidth value={infringementType} onChange={(e) => setInfringementType(e.target.value)} />
+            <TextField label="Customs IPR Infringement Type" variant="outlined" fullWidth value={infringementType} onChange={(e) => setInfringementType(e.target.value)} />
         </Grid>
 
         {/* Subpoena, Cease & Desist, and Additional Booleans */}
         <Grid item xs={6}>
-          <FormControlLabel control={<Checkbox checked={subpoena} onChange={(e) => setSubpoena(e.target.checked)} />} label="Subpoena" />
+            <TextField select label="Subpoena" variant="outlined" fullWidth value={subpoena} onChange={(e) => setSubpoena(e.target.value)}>
+            <MenuItem value="product">Product</MenuItem>
+            <MenuItem value="no">No</MenuItem>
+            <MenuItem value="n/a">N/A</MenuItem>
+            </TextField>
         </Grid>
         <Grid item xs={6}>
-          <FormControlLabel control={<Checkbox checked={subpoenaOpen} onChange={(e) => setSubpoenaOpen(e.target.checked)} />} label="Subpoena Open/Closed" />
+            <TextField select label="Subpoena Open/Closed" variant="outlined" fullWidth value={subpoenaOpen} onChange={(e) => setSubpoenaOpen(e.target.value)}>
+            <MenuItem value="open">Open</MenuItem>
+            <MenuItem value="closed">Closed</MenuItem>
+            <MenuItem value="n/a">N/A</MenuItem>
+            </TextField>
         </Grid>
         <Grid item xs={6}>
-          <FormControlLabel control={<Checkbox checked={ceaseDesist} onChange={(e) => setCeaseDesist(e.target.checked)} />} label="C&D" />
+            <TextField select label="Cease & Desist" variant="outlined" fullWidth value={ceaseDesist} onChange={(e) => setCeaseDesist(e.target.value)}>
+            <MenuItem value="yes">Yes</MenuItem>
+            <MenuItem value="no">No</MenuItem>
+            <MenuItem value="n/a">N/A</MenuItem>
+            </TextField>
         </Grid>
         <Grid item xs={6}>
-          <FormControlLabel control={<Checkbox checked={ceaseDesistOpen} onChange={(e) => setCeaseDesistOpen(e.target.checked)} />} label="C&D Open/Closed" />
-        </Grid>
-        <Grid item xs={6}>
-          <FormControlLabel control={<Checkbox checked={dueDiligence} onChange={(e) => setDueDiligence(e.target.checked)} />} label="Due Diligence" />
-        </Grid>
-        <Grid item xs={6}>
-          <FormControlLabel control={<Checkbox checked={enhanced} onChange={(e) => setEnhanced(e.target.checked)} />} label="Enhanced" />
-        </Grid>
-        <Grid item xs={6}>
-          <FormControlLabel control={<Checkbox checked={image} onChange={(e) => setImage(e.target.checked)} />} label="Image" />
+            <TextField select label="Cease & Desist Open/Closed" variant="outlined" fullWidth value={ceaseDesistOpen} onChange={(e) => setCeaseDesistOpen(e.target.value)}>
+            <MenuItem value="open">Open</MenuItem>
+            <MenuItem value="closed">Closed</MenuItem>
+            <MenuItem value="n/a">N/A</MenuItem>
+            </TextField>
         </Grid>
 
-        {/* Notes */}
+        <Grid item xs={6}>
+            <TextField select label="Due Diligence" variant="outlined" fullWidth value={dueDiligence} onChange={(e) => setDueDiligence(e.target.value)}>
+            <MenuItem value="yes">Yes</MenuItem>
+            <MenuItem value="no">No</MenuItem>
+            <MenuItem value="n/a">N/A</MenuItem>
+            </TextField>
+        </Grid>
+
+        <Grid item xs={6}>
+            <TextField select label="Enhanced Due Diligence" variant="outlined" fullWidth value={enhancedDueDiligence} onChange={(e) => setEnhancedDueDiligence(e.target.value)}>
+            <MenuItem value="yes">Yes</MenuItem>
+            <MenuItem value="no">No</MenuItem>
+            <MenuItem value="n/a">N/A</MenuItem>
+            </TextField>
+        </Grid>
+
         <Grid item xs={12}>
           <TextField label="Notes" multiline rows={4} variant="outlined" fullWidth value={notes} onChange={(e) => setNotes(e.target.value)} />
         </Grid>
-
-        {/* File Upload */}
-        <Grid item xs={12}>
-          <input type="file" onChange={handleFileChange} required accept=".pdf,.png,.jpg,.jpeg,.txt" />
-        </Grid>
-
-        <FormUpload onUploadSuccess={() => alert('File uploaded successfully!')} />
 
         {/* Submit Button */}
         <Grid item xs={12}>
@@ -219,4 +235,4 @@ function CreateCase({ onUploadSuccess }) {
   );
 }
 
-export default FormUpload;
+export default CreateCase;
