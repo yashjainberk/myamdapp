@@ -1,6 +1,5 @@
 import logging
 from azure.cosmos import CosmosClient, exceptions
-
 import azure.functions as func
 
 # Initialize the Cosmos client
