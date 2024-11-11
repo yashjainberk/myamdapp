@@ -26,6 +26,7 @@ import FormUpload from './components/FormUpload'; // Import FormUpload component
 import TagFilter from "./components/TagFilter";
 import CreateCase from "./components/CreateCase";
 import EditCase from "./components/EditCase";
+import CaseDetails from './components/CaseDetails'; // Import the new component
 
 // Create a custom theme with AMD color scheme
 const theme = createTheme({
