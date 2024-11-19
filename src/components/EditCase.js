@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
+import { editIncident } from '../apis/EditCaseAPI.js'
 
 function EditCase({ onEditSuccess }) {
   const [incID, setIncID] = useState('');        // Incident ID for case selection
@@ -75,38 +76,53 @@ function EditCase({ onEditSuccess }) {
   // Handle form submission for all fields
   const handleSubmit = async (event) => {
     event.preventDefault();
+    
+    if (!incID || !dateReported || !incidentType) {
+        alert('Please provide all required fields.');
+        return;
+    }
+
+    setUploading(true);
 
     try {
-      {/*CHANGE URL*/}
-      const response = await fetch('https://amdxupsyncfinal.azurewebsites.net/api/edit_incident?code=IXcwYoF61vgHfRUJn1CqgNEzfEx1srVDIMYo6l28PiW0AzFu5GDwDA%3D%3D', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ incID, editFields }),
-      });
+        const data = {
+            incID,
+            dateReported,
+            incidentType,
+            totalQTY,
+            region,
+            country,
+            stateProvince,
+            carID,
+            customsPortAgency,
+            destinationCountry,
+            originCountry,
+            locationRecovered,
+            seizureDate,
+            bondAmount,
+            infringementType,
+            subpoena: subpoena.toString(),
+            subpoenaOpen: subpoenaOpen.toString(),
+            ceaseDesist: ceaseDesist.toString(),
+            ceaseDesistOpen: ceaseDesistOpen.toString(),
+            dueDiligence: dueDiligence.toString(),
+            enhanced: enhanced.toString(),
+            image: image.toString(),
+            notes
+        };
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to update incident');
-      }
-
-      // Notify user of success
-      alert(`Fields updated successfully for Incident ID "${incID}"!`);
-
-      // Trigger callback if provided
-      if (onEditSuccess) {
-        onEditSuccess();
-      }
-
-      // Reset form fields
-      setIncID('');
-      setEditFields([]);
-      setShowEditOptions(false);
-
-    } catch (err) {
-      setError(err.message);
+        const response = await createIncident({ body: data });
+        alert('Entry created successfully!');
+        resetForm();
+        
+        if (onUploadSuccess) {
+            onUploadSuccess();
+        }
+    } catch (error) {
+        console.error('Error creating entry:', error);
+        alert(error.message || 'Error creating entry. Please try again.');
+    } finally {
+        setUploading(false);
     }
   };
 
@@ -202,4 +218,4 @@ function EditCase({ onEditSuccess }) {
   );
 }
 
-export default EditCase;
+export default React.memo(EditCase);
