@@ -7,127 +7,160 @@ import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import axios from 'axios'
+import { Box, Card, CardContent, Typography, Select, MenuItem, OutlinedInput, Chip } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 
+export default function DynamicCaseTimeline() {
+    const [incList, setIncList] = useState([]);
+    const [cases, setCases] = useState([]);
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [selectedIncs, setSelectedIncs] = useState([]);
+    const [timelineData, setTimelineData] = useState([]);
 
-export default function DynamicCaseTimeline () {
-    /** Store Clicked Cases */
-    const [incList, setIncList] = useState([])
-    const [cases, setCases] = useState([])
-    const [data, setData] = useState(null); // State to store the response data
-    const [error, setError] = useState(null); // State to store any errors
-    const [loading, setLoading] = useState(false); // State to indicate loading
-
-    /** Get All Inc ID */
     const fetchAllIncIDs = async () => {
         try {
-          setLoading(true); // Set loading to true while fetching
-          const response = await axios.get(
-            "https://dvue-more-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_all_incid?code=onapPtURF5C773DMxg_n1szRPIalV9YzPs-H1Es081r5AzFuk0QFYg%3D%3D", 
-          );
-          console.log('asduiaonsdjoands')
-          console.log(response)
-          setIncList(response.data); // Update state with the response data
+            setLoading(true);
+            const response = await axios.get(
+                "https://dvue-more-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_all_incid?code=onapPtURF5C773DMxg_n1szRPIalV9YzPs-H1Es081r5AzFuk0QFYg%3D%3D"
+            );
+            // Ensure we're setting an array of values
+            setIncList(response.data.incident_ids || []); // Assuming the API returns { incident_ids: [...] }
+            console.log("Fetched IDs:", response.data);
         } catch (err) {
-          setError(err.message); // Update state with the error message
+            setError(err.message);
+            console.error("Error fetching IDs:", err);
         } finally {
-          setLoading(false); // Set loading to false after fetching
+            setLoading(false);
         }
-      };   
-    
-      useEffect(() => {
-        // Example: Fetch data for a specific incident ID when the component mounts
-        fetchAllIncIDs()
-        // console.log(incList)
-      }, []);
+    };
 
+    useEffect(() => {
+        fetchAllIncIDs();
+    }, []);
 
-    /** Get IncID Data Call */
     const fetchIncidentData = async (incidentID) => {
         try {
-          setLoading(true); // Set loading to true while fetching
-          const response = await axios.get(
-            "https://moredashboardapis.azurewebsites.net/api/get_data_by_incid", // Replace with your Azure Function URL
-            {
-              params: { incidentID }, // Pass the incidentID as a query parameter
-            }
-          );
-          setData(response.data); // Update state with the response data
+            setLoading(true);
+            const response = await axios.get(
+                "https://moredashboardapis.azurewebsites.net/api/get_data_by_incid",
+                {
+                    params: { incidentID },
+                }
+            );
+            return response.data;
         } catch (err) {
-          setError(err.message); // Update state with the error message
-        } finally {
-          setLoading(false); // Set loading to false after fetching
+            console.error(`Error fetching data for incident ${incidentID}:`, err);
+            throw err;
         }
-      };
-    
-      useEffect(() => {
-        // const incidentID = "2023-M000001"; // Replace with your desired incident ID
-        // fetchIncidentData(incidentID)
-      }, []);
+    };
 
+    const handleIncidentSelect = (event) => {
+        const value = event.target.value;
+        setSelectedIncs(typeof value === 'string' ? value.split(',') : value);
+    };
+
+    useEffect(() => {
+        const fetchSelectedData = async () => {
+            if (selectedIncs.length > 0) {
+                try {
+                    setLoading(true);
+                    const promises = selectedIncs.map(incId => fetchIncidentData(incId));
+                    const responses = await Promise.all(promises);
+                    setTimelineData(responses);
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                setTimelineData([]);
+            }
+        };
+
+        fetchSelectedData();
+    }, [selectedIncs]);
+
+    const formatDate = (date) => {
+        return new Date(date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    if (loading && !incList.length) {
+        return <Typography>Loading incident IDs...</Typography>;
+    }
+
+    if (error && !incList.length) {
+        return <Typography color="error">Error loading incident IDs: {error}</Typography>;
+    }
 
     return (
-        <div />
-        /** 
-            
-            <Box mt={5}>
-            <Typography variant="h5" sx={{ mb: 3 }}>
-            Case Creation Timeline
-            </Typography>
-            <Timeline position="alternate">
-            {getSortedFolders().map((folder, index) => (
-                <TimelineItem key={index}>
-                <TimelineOppositeContent color="text.secondary">
-                    {formatDate(folder.creationTime)}
-                </TimelineOppositeContent>
-                <TimelineSeparator>
-                    <Slide in direction="up" timeout={1000}>
-                    <TimelineDot
-                        sx={{
-                        background: 'linear-gradient(135deg, #FF416C, #FF4B2B)',
-                        boxShadow: '0 0 10px rgba(255, 65, 108, 0.7)',
-                        }}
-                    >
-                        <FolderOpenIcon sx={{ color: '#fff' }} />
-                    </TimelineDot>
-                    </Slide>
-                    {index !== getSortedFolders().length - 1 && (
-                    <TimelineConnector
-                        sx={{
-                        backgroundColor: 'rgba(255, 65, 108, 0.8)',
-                        width: '4px',
-                        boxShadow: '0 0 12px rgba(255, 65, 108, 0.5)',
-                        borderRadius: '4px', // Curve the connector
-                        }}
-                    />
+        <Box sx={{ p: 3 }}>
+            <FormControl sx={{ width: '100%', mb: 3 }}>
+                <InputLabel id="incident-select-label">Select Incidents</InputLabel>
+                <Select
+                    labelId="incident-select-label"
+                    multiple
+                    value={selectedIncs}
+                    onChange={handleIncidentSelect}
+                    input={<OutlinedInput label="Select Incidents" />}
+                    renderValue={(selected) => (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            {selected.map((value) => (
+                                <Chip key={value} label={value} />
+                            ))}
+                        </Box>
                     )}
-                </TimelineSeparator>
-                <TimelineContent>
-                    <Fade in timeout={1000}>
-                    <Card
-                        sx={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                        backdropFilter: 'blur(10px)', // Glassmorphism effect
-                        borderRadius: 2,
-                        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                        '&:hover': {
-                            transform: 'scale(1.05)',
-                            boxShadow: '0px 12px 24px rgba(0, 0, 0, 0.2)',
-                        },
-                        }}
-                    >
-                        <CardContent>
-                        <Typography variant="h6">{folder.folderName}</Typography>
-                        <Typography variant="body2">Folder Created: {formatDate(folder.creationTime)}</Typography>
-                        </CardContent>
-                    </Card>
-                    </Fade>
-                </TimelineContent>
-                </TimelineItem>
-            ))}
-            </Timeline>
-        </Box>
+                >
+                    {incList.length > 0 ? (
+                        incList.map((inc) => (
+                            <MenuItem key={inc} value={inc}>
+                                {inc}
+                            </MenuItem>
+                        ))
+                    ) : (
+                        <MenuItem disabled>No incidents available</MenuItem>
+                    )}
+                </Select>
+            </FormControl>
 
-            **/
-        
-    )
+            {loading && <Typography>Loading timeline data...</Typography>}
+            {error && <Typography color="error">{error}</Typography>}
+
+            {!loading && timelineData.length > 0 && (
+                <Timeline position="alternate">
+                    {timelineData.map((incident, index) => (
+                        <TimelineItem key={`${incident.incidentID}-${index}`}>
+                            <TimelineOppositeContent color="text.secondary">
+                                {formatDate(incident.date)}
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                                <TimelineDot color="primary" />
+                                {index !== timelineData.length - 1 && <TimelineConnector />}
+                            </TimelineSeparator>
+                            <TimelineContent>
+                                <Card>
+                                    <CardContent>
+                                        <Typography variant="h6">
+                                            {incident.incidentID}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            {incident.description}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </TimelineContent>
+                        </TimelineItem>
+                    ))}
+                </Timeline>
+            )}
+        </Box>
+    );
 }
