@@ -27,7 +27,7 @@ import FormUpload from './components/FormUpload'; // Import FormUpload component
 import TagFilter from "./components/TagFilter";
 import CreateCase from "./components/CreateCase";
 import EditCase from "./components/EditCase";
-
+import DynamicCaseTimeline from './components/DynamicCaseTimeline';
 
 
 
@@ -592,65 +592,8 @@ function App() {
                </Box>
                 
                {/* Timeline Component */}
-               {data && (
-                 <Box mt={5}>
-                   <Typography variant="h5" sx={{ mb: 3 }}>
-                     Case Creation Timeline
-                   </Typography>
-                   <Timeline position="alternate">
-                     {getSortedFolders().map((folder, index) => (
-                       <TimelineItem key={index}>
-                         <TimelineOppositeContent color="text.secondary">
-                           {formatDate(folder.creationTime)}
-                         </TimelineOppositeContent>
-                         <TimelineSeparator>
-                           <Slide in direction="up" timeout={1000}>
-                             <TimelineDot
-                               sx={{
-                                 background: 'linear-gradient(135deg, #FF416C, #FF4B2B)',
-                                 boxShadow: '0 0 10px rgba(255, 65, 108, 0.7)',
-                               }}
-                             >
-                               <FolderOpenIcon sx={{ color: '#fff' }} />
-                             </TimelineDot>
-                           </Slide>
-                           {index !== getSortedFolders().length - 1 && (
-                             <TimelineConnector
-                               sx={{
-                                 backgroundColor: 'rgba(255, 65, 108, 0.8)',
-                                 width: '4px',
-                                 boxShadow: '0 0 12px rgba(255, 65, 108, 0.5)',
-                                 borderRadius: '4px', // Curve the connector
-                               }}
-                             />
-                           )}
-                         </TimelineSeparator>
-                         <TimelineContent>
-                           <Fade in timeout={1000}>
-                             <Card
-                               sx={{
-                                 backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                                 backdropFilter: 'blur(10px)', // Glassmorphism effect
-                                 borderRadius: 2,
-                                 transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                                 '&:hover': {
-                                   transform: 'scale(1.05)',
-                                   boxShadow: '0px 12px 24px rgba(0, 0, 0, 0.2)',
-                                 },
-                               }}
-                             >
-                               <CardContent>
-                                 <Typography variant="h6">{folder.folderName}</Typography>
-                                 <Typography variant="body2">Folder Created: {formatDate(folder.creationTime)}</Typography>
-                               </CardContent>
-                             </Card>
-                           </Fade>
-                         </TimelineContent>
-                       </TimelineItem>
-                     ))}
-                   </Timeline>
-                 </Box>
-               )}
+               <DynamicCaseTimeline />
+               
              </>
            }
          />
