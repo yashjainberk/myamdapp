@@ -111,7 +111,7 @@ function EditCase({ onEditSuccess }) {
             notes
         };
 
-        const response = await createIncident({ body: data });
+        // const response = await createIncident({ body: data });
         alert('Entry created successfully!');
         resetForm();
         

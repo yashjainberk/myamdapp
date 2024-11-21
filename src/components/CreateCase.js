@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, MenuItem } from '@mui/material';
-import { createIncident } from '../apis/UploadCaseAPI.js'
 
 function CreateCase({ onUploadSuccess }) {
   const [caseInfo, setCaseInfo] = useState('');  // State for case information input
@@ -87,7 +86,7 @@ function CreateCase({ onUploadSuccess }) {
             notes
         };
 
-        const response = await createIncident({ body: data });
+        // const response = await createIncident({ body: data });
         
         alert('Entry created successfully!');
         resetForm();
