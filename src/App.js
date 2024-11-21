@@ -3,7 +3,7 @@ import { Routes, Route, Link, useNavigate } from 'react-router-dom'; // Import u
 import axios from 'axios';
 import {
  AppBar, Toolbar, Typography, CircularProgress, Card, CardContent, Grid, IconButton, Box, CssBaseline, Drawer, Divider, List, ListItem, ListItemText, TextField, Autocomplete, Button,
- CardActionArea, Slide, Fade
+ CardActionArea, Slide, Fade, MenuItem, TableContainer, Paper, Table, TableRow, TableHead, TableBody, TableCell
 } from '@mui/material';
 import { JsonToTable } from "react-json-to-table";
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
@@ -111,6 +111,18 @@ function App() {
  const [tagInfo, setTagInfo] = useState({ valueMap: {}, allKeys: [] }); // State for tag value map
  const [filteredFiles, setFilteredFiles] = useState(null); // State for filtered files
  const [incidentMetadata, setIncidentMetadata] = useState(null); // Metadata for selected IncID
+ const tableNames = ["Master Data", "Entities", "Product Analysis"]; // The three SQL tables
+ const [columnsData, setColumnsData] = useState({});
+  const [selectedColumns, setSelectedColumns] = useState({
+    "Master Data": [],
+    "Entities": [],
+    "Product Analysis": [],
+  });
+  const [tableData, setTableData] = useState({
+    "Master Data": [],
+    "Entities": [],
+    "Product Analysis": [],
+  });
 
 
 
@@ -168,10 +180,48 @@ function App() {
  }, []);
 
 
+ useEffect(() => {
+  const fetchColumns = async () => {
+    try {
+      const columns = {};
+      for (const table of tableNames) {
+        const response = await axios.get('http://127.0.0.1:5000/get-columns', { params: { table } });
+        columns[table] = response.data.columns;
+      }
+      setColumnsData(columns);
+    } catch (error) {
+      console.error("Error fetching columns:", error);
+    }
+  };
+  fetchColumns();
+}, []);
+
+
+const fetchTableData = async () => {
+  try {
+    const response = await axios.post('http://127.0.0.1:5000/get-incident', {
+      incidentID: selectedSubfolder,
+      tables: selectedColumns,
+    });
+    setTableData(response.data);
+    console.log("tabledata", tableData);
+  } catch (error) {
+    console.error("Error fetching table data:", error);
+  }
+};
+
+const handleColumnChange = (tableName, columns) => {
+  setSelectedColumns((prev) => ({
+    ...prev,
+    [tableName]: columns,
+  }));
+};
+
+
  const fetchIncidentMetadata = async (incidentID) => {
   console.log('here')
    try {
-     const response = await axios.get('http://127.0.0.1:5000/get-incident', {
+     const response = await axios.get('http://127.0.0.1:5000/get-metadata', {
        params: { incidentID: incidentID }
      });
      
@@ -526,7 +576,86 @@ function App() {
                       </div>
                     </div>
                   )}
+<Box sx={{ padding: 2 }}>
+      <Typography variant="h4" gutterBottom>
+        Dashboard
+      </Typography>
 
+      <Grid container spacing={3}>
+        {tableNames.map((tableName) => (
+          <Grid item xs={12} sm={6} md={4} key={tableName}>
+            <Box sx={{ maxWidth: "95%", margin: "0 auto" }}>
+              <Typography variant="h6" align="center">
+                {tableName}
+              </Typography>
+
+              {/* Dropdown for column selection */}
+              <TextField
+                select
+                label={`Select Columns for ${tableName}`}
+                value={selectedColumns[tableName] || []}
+                onChange={(e) => handleColumnChange(tableName, e.target.value)}
+                SelectProps={{
+                  multiple: true,
+                }}
+                fullWidth
+                variant="outlined"
+                sx={{ marginBottom: 2 }}
+              >
+                {(columnsData[tableName] || []).map((column) => (
+                  <MenuItem key={column} value={column}>
+                    {column}
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              {/* Table for displaying data */}
+              <TableContainer
+                component={Paper}
+                sx={{ marginTop: 1, maxHeight: "500px", overflowY: "auto" }}
+              >
+                <Table stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      {selectedColumns[tableName]?.map((column) => (
+                        <TableCell key={column}>{column}</TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {/* Render rows dynamically based on column data */}
+                    {tableData[selectedColumns[tableName]?.[0]]?.map(
+                      (_, rowIndex) => (
+                        <TableRow key={rowIndex}>
+                          {selectedColumns[tableName]?.map((column) => (
+                            <TableCell key={column}>
+                              {tableData[column]?.[rowIndex] || "-"}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      )
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
+
+      <Box sx={{ marginTop: 2, textAlign: "center" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={fetchTableData}
+          disabled={
+            !Object.values(selectedColumns).some((cols) => cols.length > 0)
+          }
+        >
+          Fetch Data
+        </Button>
+      </Box>
+    </Box>
 
                    {/* Render Files in Selected Subfolder */}
                    {selectedSubfolder && data.folders[selectedFolder][selectedSubfolder] && (
