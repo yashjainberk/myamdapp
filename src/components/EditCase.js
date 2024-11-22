@@ -3,29 +3,29 @@ import { TextField, Button, Grid, MenuItem, FormControlLabel, Checkbox } from '@
 
 function EditCase({ onEditSuccess }) {
   const [formData, setFormData] = useState({
-    incID: '',
-    dateReported: '',
-    incidentType: '',
-    totalQTY: '',
-    region: '',
-    country: '',
-    stateProvince: '',
-    carID: '',
-    customsPortAgency: '',
-    destinationCountry: '',
-    originCountry: '',
-    locationRecovered: '',
-    seizureDate: '',
-    bondAmount: '',
-    infringementType: '',
-    subpoena: false,
-    subpoenaOpen: false,
-    ceaseDesist: false,
-    ceaseDesistOpen: false,
-    dueDiligence: false,
-    enhanced: false,
-    image: false,
-    notes: ''
+    "IncID": '',
+    "Date_Reported": '',
+    "Incident_Type": '',
+    "Total_QTY_of_Parts": '',
+    "Region": '',
+    "Country": '',
+    "State_Province": '',
+    "CarID": '',
+    "Customs_Port_Agency": '',
+    "Destination_Country": '',
+    "Country_Of_Origin": '',
+    "Location_Recovered": '',
+    "Seizure_Date": '',
+    "Bond_Amount": '',
+    "Customs_IPR_Infringement_Type": '',
+    "Subpoena": false,
+    "Subpoena_Open_Closed": false,
+    "C_D": false,
+    "C_D_Open_Closed": false,
+    "Due_Diligence": false,
+    "Enhanced_Due_Diligence": false,
+    "Image": false,
+    "Notes": ''
   });
 
   const [error, setError] = useState('');
@@ -73,22 +73,33 @@ function EditCase({ onEditSuccess }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!formData.incID) {
+    if (!formData["IncID"]) {
       setError('Incident ID is required.');
       return;
     }
 
     setUploading(true);
     try {
-      const updatedData = { ...formData };
+      const updatedData = {};
       editFields.forEach(field => {
         if (field.selectedField) {
           updatedData[field.selectedField] = field.editValue;
         }
       });
 
-      // Assuming API call here
-      // await updateCase(updatedData);
+      await axios.post(
+        "https://more-dashboard-apis.azurewebsites.net/api/editIncident?code=R3R58gWo-ZqPuPl0W7XJYNoHyiBLOiSTTRDxrXCOMb61AzFuNee7dQ%3D%3D", 
+        params = {
+          'incID': formData['IncID'],
+          updatedData
+        }
+      )
+        .then(response => {
+          console.log('Response:', response.data);
+        })
+        .catch(error => {
+          console.error('Error:', error.response ? error.response.data : error.message);
+        }); 
       
       if (onEditSuccess) {
         onEditSuccess();

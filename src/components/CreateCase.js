@@ -61,33 +61,42 @@ function CreateCase({ onUploadSuccess }) {
     setUploading(true);
 
     try {
-        const data = {
-            incID,
-            dateReported,
-            incidentType,
-            totalQTY,
-            region,
-            country,
-            stateProvince,
-            carID,
-            customsPortAgency,
-            destinationCountry,
-            originCountry,
-            locationRecovered,
-            seizureDate,
-            bondAmount,
-            infringementType,
-            subpoena: subpoena.toString(),
-            subpoenaOpen: subpoenaOpen.toString(),
-            ceaseDesist: ceaseDesist.toString(),
-            ceaseDesistOpen: ceaseDesistOpen.toString(),
-            dueDiligence: dueDiligence.toString(),
-            enhanced: enhanced.toString(),
-            image: image.toString(),
-            notes
-        };
+      const payload = {
+        "IncID": incID,
+        "Date_Reported": dateReported,
+        "Incident_Type": incidentType,
+        "Total_QTY_of_Parts": totalQTY,
+        "Region": region,
+        "Country": country,
+        "State_Province": stateProvince,
+        "CarID": carID,
+        "Customs_Port_Agency": customsPortAgency,
+        "Destination_Country": destinationCountry,
+        "Country_Of_Origin": originCountry,
+        "Location_Recovered": locationRecovered,
+        "Seizure_Date": seizureDate,
+        "Bond_Amount": bondAmount,
+        "Customs_IPR_Infringement_Type": infringementType,
+        "Subpoena": subpoena.toString(),
+        "Subpoena_Open_Closed": subpoenaOpen.toString(),
+        "C_D": ceaseDesist.toString(),
+        "C_D_Open_Closed": ceaseDesistOpen.toString(),
+        "Due_Diligence": dueDiligence.toString(),
+        "Enhanced_Due_Diligence": enhanced.toString(),
+        "Image": image.toString(),
+        "Notes": notes
+      };
 
-        // const response = await createIncident({ body: data });
+        await axios.post(
+          "https://more-dashboard-apis.azurewebsites.net/api/createIncident?code=1-Fj9RXnFqiUPxPZBK89RyWlGULG36pr5VaPBUGvO_3rAzFurZZ_CA%3D%3D", 
+          payload
+        )
+          .then(response => {
+            console.log('Response:', response.data);
+          })
+          .catch(error => {
+            console.error('Error:', error.response ? error.response.data : error.message);
+          });
         
         alert('Entry created successfully!');
         resetForm();

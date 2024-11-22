@@ -27,7 +27,7 @@ export default function DynamicCaseTimeline() {
                 "https://more-dashboard-apis.azurewebsites.net/api/get_all_incid?code=Zib5G0xs9j6WHxn8OMuz_kgsHb2hiPEgsh1i8DyQyekrAzFudod_Vw%3D%3D"
             );
             // Ensure we're setting an array of values
-            setIncList(response.data || []); // Assuming the API returns { incident_ids: [...] }
+            setIncList(response || []); // Assuming the API returns { incident_ids: [...] }
             console.log("Fetched IDs:", response.data);
         } catch (err) {
             setError(err.message);
