@@ -24,10 +24,10 @@ export default function DynamicCaseTimeline() {
         try {
             setLoading(true);
             const response = await axios.get(
-                "https://dvue-more-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_all_incid?code=onapPtURF5C773DMxg_n1szRPIalV9YzPs-H1Es081r5AzFuk0QFYg%3D%3D"
+                "https://more-dashboard-apis.azurewebsites.net/api/get_all_incid?code=Zib5G0xs9j6WHxn8OMuz_kgsHb2hiPEgsh1i8DyQyekrAzFudod_Vw%3D%3D"
             );
             // Ensure we're setting an array of values
-            setIncList(response.data.incident_ids || []); // Assuming the API returns { incident_ids: [...] }
+            setIncList(response.data || []); // Assuming the API returns { incident_ids: [...] }
             console.log("Fetched IDs:", response.data);
         } catch (err) {
             setError(err.message);
@@ -45,9 +45,9 @@ export default function DynamicCaseTimeline() {
         try {
             setLoading(true);
             const response = await axios.get(
-                "https://moredashboardapis.azurewebsites.net/api/get_data_by_incid",
+                "https://more-dashboard-apis.azurewebsites.net/api/get_data_by_incid?code=SFJPvt2B3LFkzQ7cBoZok5JmfHXrs9H87eKVFbMQkMBzAzFuywMlEQ%3D%3D",
                 {
-                    params: { incidentID },
+                    params: { 'incidentID' : incidentID  },
                 }
             );
             return response.data;
@@ -103,6 +103,9 @@ export default function DynamicCaseTimeline() {
 
     return (
         <Box sx={{ p: 3 }}>
+            <Typography variant="h4" gutterBottom sx={{ paddingBottom: "20px" }}>
+                Dynamic Case Timeline
+            </Typography>
             <FormControl sx={{ width: '100%', mb: 3 }}>
                 <InputLabel id="incident-select-label">Select Incidents</InputLabel>
                 <Select

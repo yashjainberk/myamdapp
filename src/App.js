@@ -214,7 +214,7 @@ function App() {
      console.log("No data or folders found");
      return [];
    }
-
+   
 
 
 
@@ -590,9 +590,11 @@ function App() {
                    <Typography>Select a file to view.</Typography>
                  )}
                </Box>
+
+               <Divider sx={{ paddingTop: "30px", paddingBottom: "30px" }}/>
                 
                {/* Timeline Component */}
-               <DynamicCaseTimeline />
+               <DynamicCaseTimeline/>
                
              </>
            }
