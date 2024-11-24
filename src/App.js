@@ -113,8 +113,6 @@ function App() {
  const [incidentMetadata, setIncidentMetadata] = useState(null); // Metadata for selected IncID
 
 
-
-
  // Enhanced function to create tag value map and list of all keys
  const createTagInfo = (data) => {
    const valueMap = {};
@@ -152,8 +150,8 @@ function App() {
    const fetchData = async () => {
      try {
        const response = await axios.get(
-         'https://amdxupsyncfinal.azurewebsites.net/api/amd_testing?code=IXcwYoF61vgHfRUJn1CqgNEzfEx1srVDIMYo6l28PiW0AzFu5GDwDA%3D%3D',
-         { params: { containerName: 'folders' } }
+         'https://dvuemoresa.blob.core.windows.net/',
+         { params: { containerName: 'my-container' } }
        );
        setData(response.data); // Set fetched data to state
        setLoading(false); // Set loading to false after fetching
@@ -299,7 +297,7 @@ function App() {
  const fetchIncident = async (incidentID) => {
      try {
      const response = await axios.get(
-         'https://amdxupsyncfinal.azurewebsites.net/api/RetrieveFromID?code=IXcwYoF61vgHfRUJn1CqgNEzfEx1srVDIMYo6l28PiW0AzFu5GDwDA%3D%3D',
+         'https://dvuemoresa.blob.core.windows.net/',
          { params: { IncID: incidentID } }
      );
      return response.data;
@@ -358,7 +356,7 @@ function App() {
      setSelectedFolder(selectedFile.folderName); // Set selected folder based on search
      console.log('selfdsectedfolder:', selectedFolder);
      fetchFile(
-       `https://amdupsynctest.blob.core.windows.net/folders/${fileName}`,
+       `https://dvuemoresa.blob.core.windows.net/folders/${fileName}`,
        fileName.split('.').pop().toLowerCase()
      );
    }
@@ -535,7 +533,7 @@ function App() {
                        <Grid container spacing={3}>
                          {data.folders[selectedFolder][selectedSubfolder].files.map((file, index) => {
                            const fileExtension = file.file_name.split('.').pop().toLowerCase();
-                           const filePath = `https://amdupsynctest.blob.core.windows.net/folders/${file.file_name}`;
+                           const filePath = `https://dvuemoresa.blob.core.windows.net/folders/${file.file_name}`;
                           
                            let FileIcon;
                            if (fileExtension === 'pdf') {

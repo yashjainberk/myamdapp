@@ -696,9 +696,9 @@ function FormUpload({ onUploadSuccess }) {
     }
 
     setUploading(true);
-    const blobSasUrl = 'https://amdupsynctest.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2026-08-08T06:58:12Z&st=2024-10-24T22:58:12Z&spr=https,http&sig=BeMYOypmexAYhYWexJYTSCjD1yf9Dw9y7KqKX1rROfI%3D';
-    const blobServiceClient = new BlobServiceClient(blobSasUrl);
-    const containerClient = blobServiceClient.getContainerClient('folders');
+    const blobSasUrl = 'DefaultEndpointsProtocol=https;AccountName=dvuemoresa;AccountKey=ycGfmw7a27G0f0NIxDxK+6S3Gpq9xGHeFCFvsosiZgyC11MCPNyjdX0F9vhjwGWS831ZVPzl5Yus+AStHhaTdg==;EndpointSuffix=core.windows.net';
+    const blobServiceClient = BlobServiceClient.fromConnectionString(blobSasUrl);
+    const containerClient = blobServiceClient.getContainerClient('my-container');
 
     try {
       // Map over each file to upload and track progress
