@@ -28,6 +28,7 @@ import TagFilter from "./components/TagFilter";
 import CreateCase from "./components/CreateCase";
 import EditCase from "./components/EditCase";
 import DynamicCaseTimeline from './components/DynamicCaseTimeline';
+import DateRangeCaseFinder from './components/DateRangeCaseFinder';
 
 
 
@@ -96,6 +97,7 @@ const LogoImage = styled('img')(({ theme }) => ({
 
 
 function App() {
+ const navigate = useNavigate()
  const [data, setData] = useState(null); // State for fetched data
  const [loading, setLoading] = useState(true); // State to manage loading
  const [open, setOpen] = useState(false); // Sidebar state
@@ -374,7 +376,9 @@ function App() {
          <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setOpen(true)}>
            <MenuIcon />
          </IconButton>
-         <LogoImage src="https://logos-world.net/wp-content/uploads/2020/03/AMD-Logo.png" alt="AMD Logo" />
+         <Button onClick={() => navigate('/')}>
+          <LogoImage src="https://logos-world.net/wp-content/uploads/2020/03/AMD-Logo.png" alt="AMD Logo" />
+         </Button>
          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
            Product Compliance
          </Typography>
@@ -435,6 +439,16 @@ function App() {
            path="/"
            element={
              <>
+               {/* Buttons for Timeline and DateRange */}
+               <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                <Button onClick={() => navigate('/timeline')}>
+                  Timeline
+                </Button>
+
+                <Button onClick={() => navigate('date-range')}>
+                  Date-Range
+                </Button>
+               </Box>
                {/* Search Bar with Autocomplete */}
                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
                  <Autocomplete
@@ -590,18 +604,12 @@ function App() {
                    <Typography>Select a file to view.</Typography>
                  )}
                </Box>
-
-               <Divider sx={{ paddingTop: "30px", paddingBottom: "30px" }}/>
-                
-               {/* Timeline Component */}
-               <DynamicCaseTimeline/>
-               
              </>
            }
          />
 
 
-         {/* File Upload Route */}
+         {/* Routes */}
          <Route
            path="/upload"
            element={<FileUpload />}
@@ -613,6 +621,14 @@ function App() {
          <Route
              path="/edit-case"
              element={<EditCase />}
+         />
+         <Route
+             path="/timeline"
+             element={<DynamicCaseTimeline />}
+         />
+         <Route
+             path="/date-range"
+             element={<DateRangeCaseFinder />}
          />
        </Routes>
      </Box>

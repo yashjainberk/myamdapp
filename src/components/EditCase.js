@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
+import axios from 'axios';
 
 function EditCase({ onEditSuccess }) {
   const [formData, setFormData] = useState({
@@ -88,8 +89,8 @@ function EditCase({ onEditSuccess }) {
       });
 
       await axios.post(
-        "https://more-dashboard-apis.azurewebsites.net/api/editIncident?code=R3R58gWo-ZqPuPl0W7XJYNoHyiBLOiSTTRDxrXCOMb61AzFuNee7dQ%3D%3D", 
-        params = {
+        "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/editIncident?code=rqXvfobQfdPocsLeWDINcwqeIIyg0KOutc3hpvpTgj2vAzFuMNVa-w%3D%3D", 
+        {
           'incID': formData['IncID'],
           updatedData
         }

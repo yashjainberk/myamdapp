@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, MenuItem } from '@mui/material';
+import axios from 'axios';
 
 function CreateCase({ onUploadSuccess }) {
   const [caseInfo, setCaseInfo] = useState('');  // State for case information input
@@ -88,7 +89,7 @@ function CreateCase({ onUploadSuccess }) {
       };
 
         await axios.post(
-          "https://more-dashboard-apis.azurewebsites.net/api/createIncident?code=1-Fj9RXnFqiUPxPZBK89RyWlGULG36pr5VaPBUGvO_3rAzFurZZ_CA%3D%3D", 
+          "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/createIncident?code=Vw53NBGGKU4GflS0-SoxE-u0nZiEGEkIIz3tqUBNqZefAzFuPu89LA%3D%3D", 
           payload
         )
           .then(response => {
