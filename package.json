@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@azure/storage-blob": "^12.25.0",
+    "@date-io/date-fns": "^3.0.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.4",
