@@ -1,7 +1,17 @@
 import {Grid, MenuItem, TextField} from "@mui/material";
-import React from "react";
+import React, {useState, useEffect} from "react";
 
-export default function GovtInquiries({ tags, setTags, incID, setincID, incidentType, setincidentType, country, setcountry, totalQTY, settotalQTY, dateReported, setdateReported, region, setregion, stateprovince, setstateprovince, carID, setcarID}) {
+export default function GovtInquiries({tags, setTags, incID, setincID, incidentType, setincidentType, country, setcountry, totalQTY, settotalQTY, dateReported, setdateReported, region, setregion, stateprovince, setstateprovince, carID, setcarID}) {
+    const [priority, setPriority] = useState(tags.priority || ""); // Local state for priority
+
+  // Sync priority with tags whenever it changes
+  useEffect(() => {
+    setTags((prevTags) => ({
+      ...prevTags,
+      priority,
+    }));
+  }, [priority, setTags]);
+  
     return (
         <>
             <Grid item xs={12}>

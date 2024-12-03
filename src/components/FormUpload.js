@@ -59,8 +59,6 @@ function FormUpload({ onUploadSuccess }) {
   const [bondAmount, setBondAmount] = useState('');
 
   const [ceaseDesistOpen, setceaseDesistOpen] = useState('');
-  const [priority, setPriority] = useState('');
-
 
   const caseTypes = [
     { label: 'Media Inquiries', value: 'media-inquiries' },
@@ -90,24 +88,26 @@ function FormUpload({ onUploadSuccess }) {
       const blobServiceClient = new BlobServiceClient(blobSasUrl);
       const containerClient = blobServiceClient.getContainerClient('folders');
 
-      const caseMetadataBlobPath = `${caseType}/${caseID}/${caseID}.json`;
+      const caseMetadataBlobPath = `${caseType}/${caseID}/${caseID}.txt`; // Use .txt extension
       const blobClient = containerClient.getBlockBlobClient(caseMetadataBlobPath);
 
-      let existingMetadata = {};
+      let existingMetadata = '';
 
-      if (await blobClient.exists()) { // check if json file already exists inz blob storage
-        const downloadBlockBlobResponse = await blobClient.download();
-        const metadataString = await streamToString(downloadBlockBlobResponse.readableStreamBody);
-        existingMetadata = JSON.parse(metadataString);
+      if (await blobClient.exists()) {
+        const downloadResponse = await blobClient.download();
+        existingMetadata = await streamToString(downloadResponse.readableStreamBody);
       }
 
-      const updatedMetadata = { ...existingMetadata, ...metadata };
-      const metadataString = JSON.stringify(updatedMetadata, null, 2);
+      // Prepare new content for the .txt file
+      const newMetadata = Object.entries(metadata)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('\n');
+      const updatedMetadata = existingMetadata + '\n' + newMetadata;
 
-      await blobClient.upload(metadataString, metadataString.length, {
-        blobHTTPHeaders: { blobContentType: "application/json" },
+      await blobClient.upload(updatedMetadata, updatedMetadata.length, {
+        blobHTTPHeaders: { blobContentType: 'text/plain' }, // Set MIME type to text/plain
       });
-      
+
       console.log('Case metadata updated successfully');
     } catch (error) {
       console.error('Error updating case metadata:', error);
@@ -254,11 +254,7 @@ function FormUpload({ onUploadSuccess }) {
 
     // SSOT: Create a unique identifier for the case
     const metadata = {
-      priority,
-      country,
-      totalQTY,
-      dateReported,
-      caseType
+      ...tags,
     }
 
     try {
