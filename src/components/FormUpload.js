@@ -71,16 +71,6 @@ function FormUpload({ onUploadSuccess }) {
     { label: 'Govt Law Enforcement Inquiries', value: 'govt-inquiries' },
   ];
 
-  // SSOT: Read in stream of data 
-  async function streamToString(readableStream) {
-    const chunks = []; 
-    for await(const block of readableStream) {
-        chunks.push(block.toString());
-    }
-    
-    return chunks.join('');
-  }
-
   // SSOT: UPDATE CASE METADATA IN JSON
   async function updateCaseMetadata(caseID, metadata) {
     try {
@@ -91,20 +81,11 @@ function FormUpload({ onUploadSuccess }) {
       const caseMetadataBlobPath = `${caseType}/${caseID}/${caseID}.txt`; // Use .txt extension
       const blobClient = containerClient.getBlockBlobClient(caseMetadataBlobPath);
 
-      let existingMetadata = '';
-
-      if (await blobClient.exists()) {
-        const downloadResponse = await blobClient.download();
-        existingMetadata = await streamToString(downloadResponse.readableStreamBody);
-      }
-
-      // Prepare new content for the .txt file
       const newMetadata = Object.entries(metadata)
         .map(([key, value]) => `${key}: ${value}`)
         .join('\n');
-      const updatedMetadata = existingMetadata + '\n' + newMetadata;
 
-      await blobClient.upload(updatedMetadata, updatedMetadata.length, {
+      await blobClient.upload(newMetadata, newMetadata.length, {
         blobHTTPHeaders: { blobContentType: 'text/plain' }, // Set MIME type to text/plain
       });
 
