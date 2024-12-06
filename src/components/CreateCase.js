@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, MenuItem } from '@mui/material';
+import axios from 'axios';
 
 function CreateCase({ onUploadSuccess }) {
   const [caseInfo, setCaseInfo] = useState('');  // State for case information input
   const [file, setFile] = useState(null);        // State for the file to be uploaded
   const [caseType, setCaseType] = useState('');  // State for the selected case type
   const [uploading, setUploading] = useState(false);  // State to show upload progress
+  const [error, setError] = useState('')
 
   // Universal Fields
   const [incID, setIncID] = useState('');
@@ -47,67 +49,96 @@ function CreateCase({ onUploadSuccess }) {
   };
 
   // Handle form submission
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError('');
 
-        if (!incID || !dateReported || !incidentType) {
-            alert('Please provide all required fields.');
-            return;
+    // Validate required fields
+    if (!incID || !dateReported || !incidentType) {
+        setError('Please provide all required fields.');
+        return;
+    }
+
+    setUploading(true);
+
+    try {
+      const payload = {
+        "IncID": incID,
+        "Date_Reported": dateReported,
+        "Incident_Type": incidentType,
+        "Total_QTY_of_Parts": totalQTY,
+        "Region": region,
+        "Country": country,
+        "State_Province": stateProvince,
+        "CarID": carID,
+        "Customs_Port_Agency": customsPortAgency,
+        "Destination_Country": destinationCountry,
+        "Country_Of_Origin": originCountry,
+        "Location_Recovered": locationRecovered,
+        "Seizure_Date": seizureDate,
+        "Bond_Amount": bondAmount,
+        "Customs_IPR_Infringement_Type": infringementType,
+        "Subpoena": subpoena.toString(),
+        "Subpoena_Open_Closed": subpoenaOpen.toString(),
+        "C_D": ceaseDesist.toString(),
+        "C_D_Open_Closed": ceaseDesistOpen.toString(),
+        "Due_Diligence": dueDiligence.toString(),
+        "Enhanced_Due_Diligence": enhanced.toString(),
+        "Image": image.toString(),
+        "Notes": notes
+      };
+
+        await axios.post(
+          "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/createIncident?code=Vw53NBGGKU4GflS0-SoxE-u0nZiEGEkIIz3tqUBNqZefAzFuPu89LA%3D%3D", 
+          payload
+        )
+          .then(response => {
+            console.log('Response:', response.data);
+          })
+          .catch(error => {
+            console.error('Error:', error.response ? error.response.data : error.message);
+          });
+        
+        alert('Entry created successfully!');
+        resetForm();
+        
+        if (onUploadSuccess) {
+            onUploadSuccess();
         }
+    } catch (error) {
+        console.error('Error creating entry:', error);
+        setError(error.message || 'Error creating entry. Please try again.');
+    } finally {
+        setUploading(false);
+    }
+  };
 
-        setUploading(true);
-
-        try {
-            const data = {
-                incID,
-                dateReported,
-                incidentType,
-                totalQTY,
-                region,
-                country,
-                stateProvince,
-                carID,
-                customsPortAgency,
-                destinationCountry,
-                originCountry,
-                locationRecovered,
-                seizureDate,
-                bondAmount,
-                infringementType,
-                subpoena: subpoena.toString(),
-                subpoenaOpen: subpoenaOpen.toString(),
-                ceaseDesist: ceaseDesist.toString(),
-                ceaseDesistOpen: ceaseDesistOpen.toString(),
-                dueDiligence: dueDiligence.toString(),
-                enhanced: enhanced.toString(),
-                image: image.toString(),
-                notes,
-            };
-
-            {/* Change URL */}
-            const response = await fetch('https://amdxupsyncfinal.azurewebsites.net/api/incident_upload?code=IXcwYoF61vgHfRUJn1CqgNEzfEx1srVDIMYo6l28PiW0AzFu5GDwDA%3D%3D', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result = await response.json();
-            alert('Entry created successfully!');
-            // Reset form or handle success
-            onUploadSuccess && onUploadSuccess();
-        } catch (error) {
-            console.error('Error creating entry:', error);
-            alert('Error creating entry. Please try again.');
-        } finally {
-            setUploading(false);
-        }
-    };
+  const resetForm = () => {
+    setIncID('');
+    setDateReported('');
+    setIncidentType('');
+    setTotalQTY('');
+    setRegion('');
+    setCountry('');
+    setStateProvince('');
+    setCarID('');
+    setCustomsPortAgency('');
+    setDestinationCountry('');
+    setOriginCountry('');
+    setLocationRecovered('');
+    setSeizureDate('');
+    setBondAmount('');
+    setInfringementType('');
+    setSubpoena(false);
+    setSubpoenaOpen(false);
+    setCeaseDesist(false);
+    setCeaseDesistOpen(false);
+    setDueDiligence(false);
+    setEnhancedDueDiligence(false);
+    setEnhanced(false);
+    setImage(false);
+    setNotes('');
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -231,4 +262,4 @@ function CreateCase({ onUploadSuccess }) {
   );
 }
 
-export default CreateCase;
+export default React.memo(CreateCase);

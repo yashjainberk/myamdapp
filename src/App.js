@@ -27,7 +27,8 @@ import FormUpload from './components/FormUpload'; // Import FormUpload component
 import TagFilter from "./components/TagFilter";
 import CreateCase from "./components/CreateCase";
 import EditCase from "./components/EditCase";
-
+import DynamicCaseTimeline from './components/DynamicCaseTimeline';
+import DateRangeCaseFinder from './components/DateRangeCaseFinder';
 
 
 
@@ -96,6 +97,7 @@ const LogoImage = styled('img')(({ theme }) => ({
 
 
 function App() {
+ const navigate = useNavigate()
  const [data, setData] = useState(null); // State for fetched data
  const [loading, setLoading] = useState(true); // State to manage loading
  const [open, setOpen] = useState(false); // Sidebar state
@@ -214,7 +216,7 @@ function App() {
      console.log("No data or folders found");
      return [];
    }
-
+   
 
 
 
@@ -374,7 +376,9 @@ function App() {
          <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setOpen(true)}>
            <MenuIcon />
          </IconButton>
-         <LogoImage src="https://logos-world.net/wp-content/uploads/2020/03/AMD-Logo.png" alt="AMD Logo" />
+         <Button onClick={() => navigate('/')}>
+          <LogoImage src="https://logos-world.net/wp-content/uploads/2020/03/AMD-Logo.png" alt="AMD Logo" />
+         </Button>
          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
            Product Compliance
          </Typography>
@@ -435,6 +439,16 @@ function App() {
            path="/"
            element={
              <>
+               {/* Buttons for Timeline and DateRange */}
+               <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                <Button onClick={() => navigate('/timeline')}>
+                  Timeline
+                </Button>
+
+                <Button onClick={() => navigate('date-range')}>
+                  Date-Range
+                </Button>
+               </Box>
                {/* Search Bar with Autocomplete */}
                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
                  <Autocomplete
@@ -590,73 +604,12 @@ function App() {
                    <Typography>Select a file to view.</Typography>
                  )}
                </Box>
-                
-               {/* Timeline Component */}
-               {data && (
-                 <Box mt={5}>
-                   <Typography variant="h5" sx={{ mb: 3 }}>
-                     Case Creation Timeline
-                   </Typography>
-                   <Timeline position="alternate">
-                     {getSortedFolders().map((folder, index) => (
-                       <TimelineItem key={index}>
-                         <TimelineOppositeContent color="text.secondary">
-                           {formatDate(folder.creationTime)}
-                         </TimelineOppositeContent>
-                         <TimelineSeparator>
-                           <Slide in direction="up" timeout={1000}>
-                             <TimelineDot
-                               sx={{
-                                 background: 'linear-gradient(135deg, #FF416C, #FF4B2B)',
-                                 boxShadow: '0 0 10px rgba(255, 65, 108, 0.7)',
-                               }}
-                             >
-                               <FolderOpenIcon sx={{ color: '#fff' }} />
-                             </TimelineDot>
-                           </Slide>
-                           {index !== getSortedFolders().length - 1 && (
-                             <TimelineConnector
-                               sx={{
-                                 backgroundColor: 'rgba(255, 65, 108, 0.8)',
-                                 width: '4px',
-                                 boxShadow: '0 0 12px rgba(255, 65, 108, 0.5)',
-                                 borderRadius: '4px', // Curve the connector
-                               }}
-                             />
-                           )}
-                         </TimelineSeparator>
-                         <TimelineContent>
-                           <Fade in timeout={1000}>
-                             <Card
-                               sx={{
-                                 backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                                 backdropFilter: 'blur(10px)', // Glassmorphism effect
-                                 borderRadius: 2,
-                                 transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                                 '&:hover': {
-                                   transform: 'scale(1.05)',
-                                   boxShadow: '0px 12px 24px rgba(0, 0, 0, 0.2)',
-                                 },
-                               }}
-                             >
-                               <CardContent>
-                                 <Typography variant="h6">{folder.folderName}</Typography>
-                                 <Typography variant="body2">Folder Created: {formatDate(folder.creationTime)}</Typography>
-                               </CardContent>
-                             </Card>
-                           </Fade>
-                         </TimelineContent>
-                       </TimelineItem>
-                     ))}
-                   </Timeline>
-                 </Box>
-               )}
              </>
            }
          />
 
 
-         {/* File Upload Route */}
+         {/* Routes */}
          <Route
            path="/upload"
            element={<FileUpload />}
@@ -668,6 +621,14 @@ function App() {
          <Route
              path="/edit-case"
              element={<EditCase />}
+         />
+         <Route
+             path="/timeline"
+             element={<DynamicCaseTimeline />}
+         />
+         <Route
+             path="/date-range"
+             element={<DateRangeCaseFinder />}
          />
        </Routes>
      </Box>
