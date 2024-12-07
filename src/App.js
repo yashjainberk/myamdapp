@@ -30,7 +30,12 @@ import EditCase from "./components/EditCase";
 import DynamicCaseTimeline from './components/DynamicCaseTimeline';
 import DateRangeCaseFinder from './components/DateRangeCaseFinder';
 
-
+// ***** Added imports for PDF Viewer integration *****
+import { Viewer, Worker } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+// ******************************************************
 
 // Create a custom theme with AMD color scheme
 const theme = createTheme({
@@ -114,7 +119,9 @@ function App() {
  const [filteredFiles, setFilteredFiles] = useState(null); // State for filtered files
  const [incidentMetadata, setIncidentMetadata] = useState(null); // Metadata for selected IncID
 
-
+ // ***** Added for PDF viewer integration *****
+ const defaultLayoutPluginInstance = defaultLayoutPlugin();
+ // ********************************************
 
 
  // Enhanced function to create tag value map and list of all keys
@@ -154,9 +161,10 @@ function App() {
    const fetchData = async () => {
      try {
        const response = await axios.get(
-         'https://amdxupsyncfinal.azurewebsites.net/api/amd_testing?code=IXcwYoF61vgHfRUJn1CqgNEzfEx1srVDIMYo6l28PiW0AzFu5GDwDA%3D%3D',
-         { params: { containerName: 'folders' } }
+         'https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_blob_data?code=k6NuFOUA40OdJaUrJ2unbII_1sYdA7MZCkNiHMzn9MxeAzFu7bc-8w%3D%3D',
+         { params: { containerName: 'my-container' } }
        );
+
        setData(response.data); // Set fetched data to state
        setLoading(false); // Set loading to false after fetching
      } catch (error) {
@@ -171,9 +179,8 @@ function App() {
 
 
  const fetchIncidentMetadata = async (incidentID) => {
-  console.log('here')
    try {
-     const response = await axios.get('http://127.0.0.1:5000/get-incident', {
+     const response = await axios.get('https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get-incident?code=-RE09plkVuSNWm16i5RynbQe1k72N1QK2ldN0bJPDL5xAzFust8mbg%3D%3D', {
        params: { incidentID: incidentID }
      });
      
@@ -217,9 +224,6 @@ function App() {
      return [];
    }
    
-
-
-
    return Object.entries(data.folders).flatMap(([folderName, subfolderDetails]) => {
      return Object.entries(subfolderDetails).flatMap(([subfolderName, filesInfo]) => {
        if (!filesInfo.files) return []; // Check if files exist
@@ -227,9 +231,6 @@ function App() {
          console.log(`No files found in subfolder: ${subfolderName}`);
          return []; // Return empty if no files exist
        }
-
-
-
 
        return filesInfo.files.map((file) => ({
          folderName,
@@ -241,27 +242,6 @@ function App() {
      });
    });
  };
-
-
- /*const organizedFiles = () => {
-   const filesByIncident = {};
-   if (!data) return filesByIncident;
-
-
-   Object.entries(data.folders).forEach(([folderName, folderDetails]) => {
-     folderDetails.files.forEach((file) => {
-       const [incidentID, fileName] = file.file_name.split('/');
-       if (!filesByIncident[incidentID]) {
-         filesByIncident[incidentID] = [];
-       }
-       filesByIncident[incidentID].push({ fileName, ...file });
-     });
-   });
-   return filesByIncident;
- };
-
-
- const incidentFiles = organizedFiles(); */
 
 
  const fetchFile = (filePath, fileExtension) => {
@@ -297,22 +277,6 @@ function App() {
      });
  };
 
-
- const fetchIncident = async (incidentID) => {
-     try {
-     const response = await axios.get(
-         'https://amdxupsyncfinal.azurewebsites.net/api/RetrieveFromID?code=IXcwYoF61vgHfRUJn1CqgNEzfEx1srVDIMYo6l28PiW0AzFu5GDwDA%3D%3D',
-         { params: { IncID: incidentID } }
-     );
-     return response.data;
-     } catch (error) {
-     console.error('Error fetching incident:', error);
-     }
- };
-
-
-
-
  const handleFilterChange = (newFilters) => {
    setActiveFilters(newFilters);
    applyFiltersAndSearch(newFilters, searchValue);
@@ -328,7 +292,6 @@ function App() {
  const applyFiltersAndSearch = (filters, search) => {
    let result = getAllFiles();
 
-
    // Apply filters
    if (Object.keys(filters).length > 0) {
      result = result.filter(file =>
@@ -338,14 +301,12 @@ function App() {
      );
    }
 
-
    // Apply search
    if (search) {
      result = result.filter(file =>
          file.fileName.toLowerCase().includes(search.toLowerCase())
      );
    }
-
 
    setFilteredFiles(result);
  };
@@ -360,7 +321,7 @@ function App() {
      setSelectedFolder(selectedFile.folderName); // Set selected folder based on search
      console.log('selfdsectedfolder:', selectedFolder);
      fetchFile(
-       `https://amdupsynctest.blob.core.windows.net/folders/${fileName}`,
+       `https://dvuemoresa.blob.core.windows.net/my-container/${fileName}`,
        fileName.split('.').pop().toLowerCase()
      );
    }
@@ -368,7 +329,6 @@ function App() {
 
 
  return (
-  
    <ThemeProvider theme={theme}>
      <CssBaseline /> {/* Normalize CSS */}
      <AppBar position="static" sx={{ backgroundColor: theme.palette.primary.main }}>
@@ -396,7 +356,6 @@ function App() {
          </Button>
        </Toolbar>
      </AppBar>
-
 
      {/* Sidebar Drawer */}
      <DrawerStyled anchor="left" open={open} onClose={() => setOpen(false)}>
@@ -430,7 +389,6 @@ function App() {
          )}
        </Box>
      </DrawerStyled>
-
 
      <Box sx={{ padding: theme.spacing(3) }}>
        <Routes>
@@ -482,10 +440,6 @@ function App() {
                 
                  <Box sx={{ padding: theme.spacing(1) }}>
                  </Box>
-
-
-                
-                
                </Box>
                <Box  sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
                <TagFilter tagInfo={tagInfo} onFilterChange={handleFilterChange} />
@@ -509,7 +463,6 @@ function App() {
                    ))}
                  </Grid>
                )}
-
 
                {/* Render Subfolders */}
                {selectedFolder && data.folders[selectedFolder] && (
@@ -541,7 +494,6 @@ function App() {
                     </div>
                   )}
 
-
                    {/* Render Files in Selected Subfolder */}
                    {selectedSubfolder && data.folders[selectedFolder][selectedSubfolder] && (
                      <Box mt={5}>
@@ -549,7 +501,7 @@ function App() {
                        <Grid container spacing={3}>
                          {data.folders[selectedFolder][selectedSubfolder].files.map((file, index) => {
                            const fileExtension = file.file_name.split('.').pop().toLowerCase();
-                           const filePath = `https://amdupsynctest.blob.core.windows.net/folders/${file.file_name}`;
+                           const filePath = `https://dvuemoresa.blob.core.windows.net/my-container/${file.file_name}`;
                           
                            let FileIcon;
                            if (fileExtension === 'pdf') {
@@ -583,19 +535,27 @@ function App() {
                        </Grid>
                      </Box>
                    )}
-                
-
-
                  </Box>
                )}
-
 
                {/* File Viewer */}
                <Box mt={5} sx={{ backgroundColor: '#f9f9f9', borderRadius: theme.shape.borderRadius, padding: 2 }}>
                  {loadingPdf ? (
                    <Typography>Loading file...</Typography>
                  ) : fileType === 'pdf' && fileContent ? (
-                   <embed src={fileContent} type="application/pdf" width="100%" height="600px" />
+                   // ***** Integrated PDF Viewer Logic *****
+                   <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                     <div style={{ width: '75%', height: '90vh', border: '1px solid #ccc' }}>
+                       <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                         <Viewer
+                           fileUrl={fileContent}
+                           plugins={[defaultLayoutPluginInstance]}
+                         />
+                       </Worker>
+                     </div>
+                   </div>
+                   // ****************************************
+                   // <embed src={fileContent} type="application/pdf" width="100%" height="600px" />
                  ) : fileType === 'image' && fileContent ? (
                    <img src={fileContent} alt="file content" style={{ maxWidth: '100%', borderRadius: 8 }} />
                  ) : fileType === 'txt' && fileContent ? (
@@ -607,7 +567,6 @@ function App() {
              </>
            }
          />
-
 
          {/* Routes */}
          <Route
@@ -641,16 +600,13 @@ function App() {
 function FileUpload() {
  const navigate = useNavigate(); // Hook to programmatically navigate
 
-
  return (
    <Box sx={{ maxWidth: 400, margin: '0 auto', mb: 5 }}>
      <Typography variant="h6" align="center" sx={{ mb: 2 }}>
        Upload a File
      </Typography>
 
-
      <FormUpload onUploadSuccess={() => console.log('Upload successful')} />
-
 
      {/* Back Button */}
      <Button
@@ -663,6 +619,5 @@ function FileUpload() {
    </Box>
  );
 }
-
 
 export default App;
