@@ -172,7 +172,6 @@ function App() {
 
 
  const fetchIncidentMetadata = async (incidentID) => {
-  console.log('here')
    try {
      const response = await axios.get('https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get-incident?code=-RE09plkVuSNWm16i5RynbQe1k72N1QK2ldN0bJPDL5xAzFust8mbg%3D%3D', {
        params: { incidentID: incidentID }
@@ -534,7 +533,7 @@ function App() {
                        <Grid container spacing={3}>
                          {data.folders[selectedFolder][selectedSubfolder].files.map((file, index) => {
                            const fileExtension = file.file_name.split('.').pop().toLowerCase();
-                           const filePath = `https://amdupsynctest.blob.core.windows.net/folders/${file.file_name}`;
+                           const filePath = `https://dvuemoresa.blob.core.windows.net/my-container/${file.file_name}`;
                           
                            let FileIcon;
                            if (fileExtension === 'pdf') {
