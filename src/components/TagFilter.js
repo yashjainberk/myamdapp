@@ -6,19 +6,20 @@ import {
     InputLabel,
     MenuItem,
     OutlinedInput,
-    Select
+    Select,
+    TextField
 } from '@mui/material';
 
 const tagInfo = {
-    allKeys: ['priority', 'caseID'], // Add your tags here
+    allKeys: ['priority', 'incID'], // Add your tags here
     valueMap: {
         priority: ['High', 'Medium', 'Low'],
-        caseID: ['1234', '5678', '91011'], // Sample values for each tag
+        incID: ['1234', '5678', '91011'], // Sample values for each tag
     },
 };
 
 const handleFilterChange = (filters) => {
-    console.log('Active Filters:', filters);
+    return filters;
 };
 
 function App() {
@@ -29,97 +30,110 @@ function App() {
     );
 }
 
-const TagFilter = ({ tagInfo, onFilterChange }) => {
-    const [selectedKey, setSelectedKey] = useState('');
-    const [activeFilters, setActiveFilters] = useState({});
+const TagFilter = ({ tagInfo, activeFilters, onFilterChange }) => {
+  const [selectedKey, setSelectedKey] = useState('');
+  const [incIDValue, setIncIDValue] = useState(''); // Moved incID state to TagFilter
 
-    const handleKeyChange = (event) => {
-        setSelectedKey(event.target.value);
-    };
+  const handleKeyChange = (event) => {
+    setSelectedKey(event.target.value);
+    if (event.target.value !== 'incID') {
+      setIncIDValue('');
+    }
+  };
 
-    const handleValueChange = (event) => {
-        const value = event.target.value;
-        setActiveFilters(prev => {
-            const newFilters = { ...prev };
-            if (value.length > 0) {
-                newFilters[selectedKey] = value;
-            } else {
-                delete newFilters[selectedKey];
-            }
-            return newFilters;
-        });
-    };
+  const handleValueChange = (event) => {
+    const value = event.target.value;
+    const newFilters = { ...activeFilters };
+    if (value.length > 0) {
+      newFilters[selectedKey] = value;
+    } else {
+      delete newFilters[selectedKey];
+    }
+    onFilterChange(newFilters); // Propagate changes to App
+  };
 
-    const handleDelete = (keyToDelete) => {
-        setActiveFilters(prev => {
-            const newFilters = { ...prev };
-            delete newFilters[keyToDelete];
-            return newFilters;
-        });
-    };
+  const handleDelete = (keyToDelete) => {
+    const newFilters = { ...activeFilters };
+    delete newFilters[keyToDelete];
+    onFilterChange(newFilters); // Propagate deletion to App
+  };
 
-    // Effect to propagate filter changes to parent component
-    React.useEffect(() => {
-        onFilterChange(activeFilters);
-    }, [activeFilters, onFilterChange]);
+  // Update filters when incID changes
+  React.useEffect(() => {
+    if (selectedKey === 'incID' && incIDValue) {
+      onFilterChange({ ...activeFilters, [selectedKey]: incIDValue });
+    }
+  }, [incIDValue, selectedKey, onFilterChange]);
 
-    return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <FormControl fullWidth>
-                <InputLabel>Select Tag</InputLabel>
-                <Select
-                    style={{ width: '300px' }}
-                    value={selectedKey}
-                    onChange={handleKeyChange}
-                    input={<OutlinedInput label="Select Tag" />}
-                >
-                    {tagInfo.allKeys.map((key) => (
-                        <MenuItem key={key} value={key}>
-                            {key}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <FormControl fullWidth>
+        <InputLabel>Select Tag</InputLabel>
+        <Select
+          value={selectedKey}
+          onChange={handleKeyChange}
+          input={<OutlinedInput label="Select Tag" />}
+        >
+          {tagInfo.allKeys.map((key) => (
+            <MenuItem key={key} value={key}>
+              {key}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-            {selectedKey && (
-                <FormControl fullWidth>
-                    <InputLabel>Select Value</InputLabel>
-                    <Select
-                        style={{ width: '300px' }}
-                        multiple
-                        value={activeFilters[selectedKey] || []}
-                        onChange={handleValueChange}
-                        input={<OutlinedInput label="Select Value" />}
-                        renderValue={(selected) => (
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                {selected.map((value) => (
-                                    <Chip key={value} label={value} />
-                                ))}
-                            </Box>
-                        )}
-                    >
-                        {tagInfo.valueMap[selectedKey]?.map((value) => (
-                            <MenuItem key={value} value={value}>
-                                {value}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            )}
-
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                {Object.entries(activeFilters).map(([key, values]) => (
-                    values.map((value) => (
-                        <Chip
-                            key={`${key}-${value}`}
-                            label={`${key}: ${value}`}
-                            onDelete={() => handleDelete(key)}
-                        />
-                    ))
+      {selectedKey === 'priority' && (
+        <FormControl fullWidth>
+          <InputLabel>Select Value</InputLabel>
+          <Select
+            multiple
+            value={activeFilters[selectedKey] || []}
+            onChange={handleValueChange}
+            input={<OutlinedInput label="Select Value" />}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} />
                 ))}
-            </Box>
-        </Box>
-    );
+              </Box>
+            )}
+          >
+            {tagInfo.valueMap[selectedKey]?.map((value) => (
+              <MenuItem key={value} value={value}>
+                {value}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
+
+      {selectedKey === 'incID' && (
+        <FormControl fullWidth>
+          <TextField
+            label="Enter Incident ID"
+            variant="outlined"
+            type="number"
+            value={incIDValue}
+            onChange={(event) => setIncIDValue(event.target.value)}
+          />
+        </FormControl>
+      )}
+
+      {/* Display active filters */}
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+        {Object.entries(activeFilters).map(([key, values]) =>
+          values.map((value) => (
+            <Chip
+              key={`${key}-${value}`}
+              label={`${key}: ${value}`}
+              onDelete={() => handleDelete(key)}
+            />
+          ))
+        )}
+      </Box>
+    </Box>
+  );
 };
+
 
 export default App;

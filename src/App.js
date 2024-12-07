@@ -3,7 +3,8 @@ import { Routes, Route, Link, useNavigate } from 'react-router-dom'; // Import u
 import axios from 'axios';
 import {
   AppBar, Toolbar, Typography, CircularProgress, Card, CardContent, Grid, IconButton, Box, CssBaseline, Drawer, Divider, List, ListItem, ListItemText, TextField, Autocomplete, Button,
-  CardActionArea, Slide, Fade
+  CardActionArea, Slide, Fade, Chip,
+  inputAdornmentClasses
 } from '@mui/material';
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -24,6 +25,16 @@ import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import './App.css';
 import FormUpload from './components/FormUpload'; // Import FormUpload component
 import TagFilter from "./components/TagFilter";
+// import getfilters from "./components/TagFilter";
+import { Tag } from '@mui/icons-material';
+import {
+
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+} from '@mui/material';
 
 // Create a custom theme with AMD color scheme
 const theme = createTheme({
@@ -91,43 +102,61 @@ function App() {
   const [open, setOpen] = useState(false); // Sidebar state
   const [selectedFolder, setSelectedFolder] = useState(null); // Store selected folder data
   const [selectedSubfolder, setSelectedSubfolder] = useState(null);
-  const [selectedIncidentID, setSelectedIncidentID] = useState(null);
   const [fileContent, setFileContent] = useState(null); // Store file content
   const [fileType, setFileType] = useState(null); // Store the type of file
   const [loadingPdf, setLoadingPdf] = useState(false); // Loading state for PDFs
   const [searchValue, setSearchValue] = useState(''); // State for search value
   const [inputValue, setInputValue] = useState(''); // State for search input
   const [activeFilters, setActiveFilters] = useState({}); // State for filter
-  const [tagInfo, setTagInfo] = useState({ valueMap: {}, allKeys: [] }); // State for tag value map
+  //const [tagInfo, setTagInfo] = useState({ valueMap: {}, allKeys: [] }); // State for tag value map
   const [filteredFiles, setFilteredFiles] = useState(null); // State for filtered files
+  const [filteredOptions, setFilteredOptions] = useState([]);
+  
+
+
+const tagInfo = {
+    allKeys: ['priority', 'incidentId'], // Add your tags here
+    valueMap: {
+        priority: ['High', 'Medium', 'Low'],
+        incidentID: ['1234', '5678', '91011'], // Sample values for each tag
+    },
+};
+
+
+
 
   // Enhanced function to create tag value map and list of all keys
   const createTagInfo = (data) => {
     const valueMap = {};
     const allKeys = new Set();
-    
+
+    // Iterate over each folder
     Object.values(data.folders).forEach(folder => {
-      folder.files.forEach(file => {
-        if (file.tags) {
-          Object.entries(file.tags).forEach(([key, value]) => {
-            if (!valueMap[key]) {
-              valueMap[key] = new Set();
-            }
-            valueMap[key].add(value);
-            allKeys.add(key);
-          });
-        }
-      });
+        // Iterate over each subfolder
+        Object.values(folder).forEach(subfolder => {
+            // Iterate over each file in the subfolder
+            subfolder.files.forEach(file => {
+                if (file.tags) {
+                    Object.entries(file.tags).forEach(([key, value]) => {
+                        if (!valueMap[key]) {
+                            valueMap[key] = new Set();
+                        }
+                        valueMap[key].add(value);
+                        allKeys.add(key);
+                    });
+                }
+            });
+        });
     });
 
     // Convert Sets to Arrays
     Object.keys(valueMap).forEach(key => {
-      valueMap[key] = Array.from(valueMap[key]);
+        valueMap[key] = Array.from(valueMap[key]);
     });
 
     return {
-      valueMap,
-      allKeys: Array.from(allKeys)
+        valueMap,
+        allKeys: Array.from(allKeys)
     };
   };
 
@@ -148,6 +177,17 @@ function App() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      const allFiles = getAllFiles();
+      setFilteredFiles(allFiles);
+      setFilteredOptions(allFiles);
+      console.log('options', filteredOptions) 
+    }
+  }, [data]);
+
+  
 
   // Function to format date
   const formatDate = (dateString) => {
@@ -173,7 +213,6 @@ function App() {
       return [];
     }
 
-
     return Object.entries(data.folders).flatMap(([folderName, subfolderDetails]) => {
       return Object.entries(subfolderDetails).flatMap(([subfolderName, filesInfo]) => {
         if (!filesInfo.files) return []; // Check if files exist
@@ -182,35 +221,18 @@ function App() {
           return []; // Return empty if no files exist
         }
 
-
         return filesInfo.files.map((file) => ({
           folderName,
           subfolderName, // Add the subfolder name
           fileName: file.file_name, // Extract file name
           createdOn: file.created_on,
-          tags: file.tags || {}, // Ensure tags are provided
+          tags: file.tags, // Ensure tags are provided
         }));
+        
       });
     });
   };
 
-  /*const organizedFiles = () => {
-    const filesByIncident = {};
-    if (!data) return filesByIncident;
-
-    Object.entries(data.folders).forEach(([folderName, folderDetails]) => {
-      folderDetails.files.forEach((file) => {
-        const [incidentID, fileName] = file.file_name.split('/');
-        if (!filesByIncident[incidentID]) {
-          filesByIncident[incidentID] = [];
-        }
-        filesByIncident[incidentID].push({ fileName, ...file });
-      });
-    });
-    return filesByIncident;
-  };
-
-  const incidentFiles = organizedFiles(); */
 
   const fetchFile = (filePath, fileExtension) => {
     setLoadingPdf(true);
@@ -247,51 +269,216 @@ function App() {
 
 
   const handleFilterChange = (newFilters) => {
+    console.log("handlefitlercjhang");
+    
     setActiveFilters(newFilters);
-    applyFiltersAndSearch(newFilters, searchValue);
+    console.log("activfil", activeFilters, "newfi", newFilters);
+    
+    // console.log('active over here', newFilters)
+    //console.log(TagFilter)
+    
   };
+
+  
 
   const handleSearchChange = (newValue) => {
     setSearchValue(newValue);
-    applyFiltersAndSearch(activeFilters, newValue);
+    applyFiltersAndSearch(activeFilters);
   };
 
-  const applyFiltersAndSearch = (filters, search) => {
+  const applyFiltersAndSearch = () => {
+    console.log("we here")
     let result = getAllFiles();
-
-    // Apply filters
-    if (Object.keys(filters).length > 0) {
-      result = result.filter(file =>
-          Object.entries(filters).every(([key, values]) =>
-              values.includes(file.tags[key])
-          )
-      );
-    }
-
+    console.log('result initial', result)
+    //console.log('YOO0', getfi)
+    console.log('this', activeFilters)
+    console.log('next', Object.keys(activeFilters).length )
+    
+    if (Object.keys(activeFilters).length > 0) {
+      result = result.filter((file) => {
+        const fileTags = file.tags || {}; // Ensure tags are defined
+        
+        // Check each filter condition
+        return Object.entries(activeFilters).every(([key, filterValue]) => {
+            const tagValue = fileTags[key];
+            console.log("fitler value", filterValue[0].toLowerCase());
+            console.log('key', key, 'filetags', fileTags, 'file', file)
+            console.log('tag val', tagValue)
+            
+            if (Array.isArray(filterValue)) {
+                console.log(filterValue[0].toLowerCase()===tagValue);
+                // If the filter value is an array, check if the tag value is included in it
+                return filterValue[0].toLowerCase()===tagValue;
+            } else {
+                // If the filter value is a string (like incID), check for direct equality
+                return tagValue === filterValue;
+            }
+        });
+    });
+    setFilteredOptions(result); // Show filtered files in Autocomplete
+    console.log('handle filtered files', filteredFiles)
+    console.log('hadnle filitred options', filteredOptions)
+  }
+  else {
+    setFilteredOptions(getAllFiles()); // Show all files in Autocomplete if no filters
+  }
+  console.log('first round filter', result);
     // Apply search
-    if (search) {
-      result = result.filter(file =>
-          file.fileName.toLowerCase().includes(search.toLowerCase())
-      );
+    
+    if (inputValue) {
+      console.log('search', inputValue)
+      result = result.filter(file =>{
+        const fileName = file.file_name || '';
+        file.fileName.toLowerCase().includes(inputValue.toLowerCase())
+    });
     }
 
     setFilteredFiles(result);
+    console.log('filteredfiles in here', filteredFiles);
   };
 
   const handleSearch = () => {
     const allFiles = getAllFiles();
+    console.log("datahere", data)
+    console.log('activfil', activeFilters)
+    applyFiltersAndSearch();
+    console.log("searchval", searchValue);
     const selectedFile = allFiles.find((file) => file.fileName === searchValue);
     if (selectedFile) {
-      console.log('selectedfile:', selectedFile)
       const { folderName, fileName } = selectedFile;
       setSelectedFolder(selectedFile.folderName); // Set selected folder based on search
-      console.log('selfdsectedfolder:', selectedFolder);
       fetchFile(
         `https://amdupsynctest.blob.core.windows.net/folders/${fileName}`,
         fileName.split('.').pop().toLowerCase()
       );
     }
   };
+
+  const TagFilter = ({ tagInfo, activeFilters, onFilterChange }) => {
+    const [selectedKey, setSelectedKey] = useState('');
+    const [incIDValue, setIncIDValue] = useState(''); // Input state for incID
+  
+    const handleKeyChange = (event) => {
+      setSelectedKey(event.target.value);
+      if (event.target.value !== 'incID') {
+        setIncIDValue(''); // Reset incID if another tag is selected
+      }
+    };
+  
+    const handleValueChange = (event) => {
+      const value = event.target.value;
+      const newFilters = { ...activeFilters };
+      if (value.length > 0) {
+        newFilters[selectedKey] = value;
+      } else {
+        delete newFilters[selectedKey];
+      }
+      console.log(selectedKey, newFilters, value )
+      setActiveFilters(newFilters);
+      console.log("active now",activeFilters);
+      onFilterChange(newFilters);
+      console.log("after")
+      //onFilterChange(newFilters); // Propagate changes to App immediately
+    };
+  
+    const handleIncIDChange = (event) => {
+      setIncIDValue(event.target.value); // Only update local state
+    };
+  
+    const handleDelete = (keyToDelete) => {
+      const newFilters = { ...activeFilters };
+      delete newFilters[keyToDelete];
+      setActiveFilters(newFilters);
+      console.log('handledle', activeFilters, newFilters)
+      onFilterChange(newFilters); // Propagate deletion to App
+    };
+  
+    // Debounce effect for updating activeFilters in the parent component
+    // useEffect(() => {
+    //   const debounceTimer = setTimeout(() => {
+    //     if (selectedKey === 'incidentId' && incIDValue) {
+    //       const newFilters = { ...activeFilters, [selectedKey]: incIDValue };
+    //       setActiveFilters(newFilters);
+    //       handleFilterChange();
+    //     }
+    //   }, 900); // Adjust debounce delay as needed
+    //   console.log('made it')
+    //   if(Object.keys(activeFilters).length > 0){
+    //   handleFilterChange()}
+    //   // Clear timeout if incIDValue changes before 300ms
+    //   return () => clearTimeout(debounceTimer);
+    // }, [incIDValue, selectedKey, activeFilters, onFilterChange]);
+  
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <FormControl fullWidth>
+          <InputLabel>Select Tag</InputLabel>
+          <Select
+            sx={{ width: theme.spacing(17) }}
+            value={selectedKey}
+            onChange={handleKeyChange}
+            input={<OutlinedInput label="Select Tag" />}
+          >
+            {tagInfo.allKeys.map((key) => (
+              <MenuItem key={key} value={key}>
+                {key}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+  
+        {selectedKey === 'priority' && (
+          <FormControl fullWidth>
+            <InputLabel>Select Value</InputLabel>
+            <Select
+              multiple
+              value={activeFilters[selectedKey] || []}
+              onChange={handleValueChange}
+              input={<OutlinedInput label="Select Value" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}
+            >
+              {tagInfo.valueMap[selectedKey]?.map((value) => (
+                <MenuItem key={value} value={value}>
+                  {value}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
+  
+        {selectedKey === 'incidentId' && (
+          <FormControl fullWidth>
+            <TextField
+              label="Enter Incident ID"
+              variant="outlined"
+              type="text" // Allow continuous text entry
+              value={incIDValue}
+              onChange={handleIncIDChange} // Directly update as user types
+            />
+          </FormControl>
+        )}
+  
+        {/* Display active filters as chips */}
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          {Object.entries(activeFilters).map(([key, values]) => (
+            <Chip
+              key={`${key}-${values}`}
+              label={`${key}: ${values}`}
+              onDelete={() => handleDelete(key)}
+            />
+          ))}
+        </Box>
+      </Box>
+    );
+  };
+  
+
 
   return (
     
@@ -357,7 +544,7 @@ function App() {
                 <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
                   <Autocomplete
                     freeSolo
-                    options={getAllFiles().map((file) => file.fileName)}
+                    options={filteredOptions.map((file) => file.fileName)}
                     value={searchValue}
                     onChange={(event, newValue) => {
                       setSearchValue(newValue);
@@ -372,6 +559,7 @@ function App() {
                         label="Search Files"
                         variant="outlined"
                         sx={{ width: 300, marginRight: 2 }}
+                        onClick={handleSearch}
                       />
                     )}
                   />
@@ -391,7 +579,10 @@ function App() {
                   
                 </Box>
                 <Box  sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-                <TagFilter tagInfo={tagInfo} onFilterChange={handleFilterChange} /> 
+                <TagFilter 
+                  tagInfo={tagInfo}
+                    activeFilters={activeFilters} // Pass activeFilters as prop
+                    onFilterChange={handleFilterChange} /> 
                 </Box>
                 {/* Display Folder Contents */}
                 {loading ? (
