@@ -22,7 +22,7 @@ export default function DateRangeCaseFinder() {
     const fetchAllIncIDs = async () => {
         try {
             setLoading(true);
-            const response = await axios.get("http://localhost:7071/api/get_all_incid");
+            const response = await axios.get("https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_all_incid?code=aynHa1NXN05yhzsr3Uzw3C2aDUpAU9Brdm-IIwmvFQyrAzFuzZ3kBQ%3D%3D");
             const values = Object.values(response.data)[0];
 
             // TODO: logic for filtering by case
@@ -37,7 +37,7 @@ export default function DateRangeCaseFinder() {
     // Fetch data for a specific incident ID
     const fetchIncidentData = async (incidentID) => {
         try {
-            const response = await axios.get("http://localhost:7071/api/get_data_by_incid", {
+            const response = await axios.get("https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_data_by_incid?code=R8ilmVIbxvUlIneVlUaH8XSHzw-re81Bge7li0jHf0-GAzFu-F-7mQ%3D%3D", {
                 params: { 'incidentID': incidentID },
             });
             return response.data;

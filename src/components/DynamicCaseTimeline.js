@@ -60,8 +60,7 @@ export default function DynamicCaseTimeline() {
         try {
             setLoading(true);
             const response = await axios.get(
-                // "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_all_incid?code=aynHa1NXN05yhzsr3Uzw3C2aDUpAU9Brdm-IIwmvFQyrAzFuzZ3kBQ%3D%3D"
-                "http://localhost:7071/api/get_all_incid"
+                "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_all_incid?code=aynHa1NXN05yhzsr3Uzw3C2aDUpAU9Brdm-IIwmvFQyrAzFuzZ3kBQ%3D%3D"
             );
 
             // TODO: logic for filtering by case
@@ -88,8 +87,7 @@ export default function DynamicCaseTimeline() {
         try {
             setLoading(true);
             const response = await axios.get(
-                // "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_data_by_incid?code=R8ilmVIbxvUlIneVlUaH8XSHzw-re81Bge7li0jHf0-GAzFu-F-7mQ%3D%3D",
-                "http://localhost:7071/api/get_data_by_incid",
+                "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_data_by_incid?code=R8ilmVIbxvUlIneVlUaH8XSHzw-re81Bge7li0jHf0-GAzFu-F-7mQ%3D%3D",
                 {
                     params: { 'incidentID' : incidentID  },
                 }

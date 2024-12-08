@@ -154,9 +154,10 @@ function App() {
    const fetchData = async () => {
      try {
        const response = await axios.get(
-         'https://amdxupsyncfinal.azurewebsites.net/api/amd_testing?code=IXcwYoF61vgHfRUJn1CqgNEzfEx1srVDIMYo6l28PiW0AzFu5GDwDA%3D%3D',
-         { params: { containerName: 'folders' } }
+         'https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_blob_data?code=k6NuFOUA40OdJaUrJ2unbII_1sYdA7MZCkNiHMzn9MxeAzFu7bc-8w%3D%3D',
+         { params: { containerName: 'my-container' } }
        );
+
        setData(response.data); // Set fetched data to state
        setLoading(false); // Set loading to false after fetching
      } catch (error) {
@@ -171,9 +172,8 @@ function App() {
 
 
  const fetchIncidentMetadata = async (incidentID) => {
-  console.log('here')
    try {
-     const response = await axios.get('http://127.0.0.1:5000/get-incident', {
+     const response = await axios.get('https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get-incident?code=-RE09plkVuSNWm16i5RynbQe1k72N1QK2ldN0bJPDL5xAzFust8mbg%3D%3D', {
        params: { incidentID: incidentID }
      });
      
@@ -297,22 +297,6 @@ function App() {
      });
  };
 
-
- const fetchIncident = async (incidentID) => {
-     try {
-     const response = await axios.get(
-         'https://amdxupsyncfinal.azurewebsites.net/api/RetrieveFromID?code=IXcwYoF61vgHfRUJn1CqgNEzfEx1srVDIMYo6l28PiW0AzFu5GDwDA%3D%3D',
-         { params: { IncID: incidentID } }
-     );
-     return response.data;
-     } catch (error) {
-     console.error('Error fetching incident:', error);
-     }
- };
-
-
-
-
  const handleFilterChange = (newFilters) => {
    setActiveFilters(newFilters);
    applyFiltersAndSearch(newFilters, searchValue);
@@ -360,7 +344,7 @@ function App() {
      setSelectedFolder(selectedFile.folderName); // Set selected folder based on search
      console.log('selfdsectedfolder:', selectedFolder);
      fetchFile(
-       `https://amdupsynctest.blob.core.windows.net/folders/${fileName}`,
+       `https://dvuemoresa.blob.core.windows.net/my-container/${fileName}`,
        fileName.split('.').pop().toLowerCase()
      );
    }
@@ -549,7 +533,7 @@ function App() {
                        <Grid container spacing={3}>
                          {data.folders[selectedFolder][selectedSubfolder].files.map((file, index) => {
                            const fileExtension = file.file_name.split('.').pop().toLowerCase();
-                           const filePath = `https://amdupsynctest.blob.core.windows.net/folders/${file.file_name}`;
+                           const filePath = `https://dvuemoresa.blob.core.windows.net/my-container/${file.file_name}`;
                           
                            let FileIcon;
                            if (fileExtension === 'pdf') {
