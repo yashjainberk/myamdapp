@@ -9,7 +9,7 @@ container_client = blob_service_client.get_container_client(container_name)
 if not container_client.exists():
     blob_service_client.create_container(container_name)
 
-root_directory = "ENTER DIRECTORY"
+root_directory = "Users/kimberwu/Downloads/test"
 
 def upload_directory_to_blob(container_client, local_directory, blob_prefix=""):
     for root, dirs, files in os.walk(local_directory):
