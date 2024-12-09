@@ -10,6 +10,7 @@ import axios from 'axios'
 import { Modal, Box, Card, Grid, CardContent, Typography, Select, MenuItem, OutlinedInput, Chip } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
+import { Numbers } from "@mui/icons-material";
 
 
 const CaseModal = ({ open, handleClose, caseData }) => (
@@ -63,10 +64,14 @@ export default function DynamicCaseTimeline() {
                 "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_all_incid?code=aynHa1NXN05yhzsr3Uzw3C2aDUpAU9Brdm-IIwmvFQyrAzFuzZ3kBQ%3D%3D"
             );
 
-            // TODO: logic for filtering by case
-
              // Access the 'data' property of the response
             let values = Object.values(response.data)[0];
+
+            if (selectedCaseType !== 'All'){
+                values = values.filter((incident) => {return incident[1] === selectedCaseType})
+            }
+
+            values = values.map(incident => incident[0])
 
             setIncList(values || []);
             console.log("Fetched IDs:", values);
@@ -182,7 +187,7 @@ export default function DynamicCaseTimeline() {
                 </Select>
             </FormControl>
 
-            <FormControl sx={{ width: '100%', mb: 3 }}>
+            <FormControl sx={{ width: '100%', mb: 3, mt: 3 }}>
                 <InputLabel id="incident-select-label">Select Incidents</InputLabel>
                 <Select
                     labelId="incident-select-label"
