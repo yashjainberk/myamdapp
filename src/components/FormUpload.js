@@ -74,7 +74,7 @@ function FormUpload({ onUploadSuccess }) {
   // SSOT: UPDATE CASE METADATA IN JSON
   async function updateCaseMetadata(caseID, metadata) {
     try {
-        const blobSasUrl = 'https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_blob_data?code=k6NuFOUA40OdJaUrJ2unbII_1sYdA7MZCkNiHMzn9MxeAzFu7bc-8w%3D%3D';
+        const blobSasUrl = 'https://dvuemoresa.blob.core.windows.net/my-container?sp=racwdli&st=2024-12-09T02:28:39Z&se=2030-12-20T10:28:39Z&sv=2022-11-02&sr=c&sig=IGBhvGq1JzWvbeDzzhE1bI%2Bo2ER1a2rbwcRoyVWyAIM%3D';
         const blobServiceClient = new BlobServiceClient(blobSasUrl);
         const containerClient = blobServiceClient.getContainerClient('my-container');
 
@@ -86,7 +86,7 @@ function FormUpload({ onUploadSuccess }) {
         const metadataJSON = JSON.stringify(metadata, null, 2);
 
         // Upload the JSON string as a blob
-        await blobClient.upload(metadataJSON, Buffer.byteLength(metadataJSON), {
+        await blobClient.upload(metadataJSON, metadataJSON.length, {
             blobHTTPHeaders: { blobContentType: 'application/json' }, // Set MIME type to application/json
         });
 
@@ -229,9 +229,9 @@ function FormUpload({ onUploadSuccess }) {
     }
 
     setUploading(true);
-    const blobSasUrl = 'https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_blob_data?code=k6NuFOUA40OdJaUrJ2unbII_1sYdA7MZCkNiHMzn9MxeAzFu7bc-8w%3D%3D';
+    const blobSasUrl = 'https://dvuemoresa.blob.core.windows.net/my-container?sp=racwdli&st=2024-12-09T02:28:39Z&se=2030-12-20T10:28:39Z&sv=2022-11-02&sr=c&sig=IGBhvGq1JzWvbeDzzhE1bI%2Bo2ER1a2rbwcRoyVWyAIM%3D';
     const blobServiceClient = new BlobServiceClient(blobSasUrl);
-    const containerClient = blobServiceClient.getContainerClient('folders');
+    const containerClient = blobServiceClient.getContainerClient('my-container');
 
     // SSOT: Create a unique identifier for the case
     const metadata = {

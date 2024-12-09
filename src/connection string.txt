@@ -3,3 +3,7 @@ DefaultEndpointsProtocol=https;AccountName=dvuemoresa;AccountKey=ycGfmw7a27G0f0N
 
 key:
 ycGfmw7a27G0f0NIxDxK+6S3Gpq9xGHeFCFvsosiZgyC11MCPNyjdX0F9vhjwGWS831ZVPzl5Yus+AStHhaTdg==
+
+blob ===
+https://dvuemoresa.blob.core.windows.net/my-container?sp=racwdli&st=2024-12-09T02:23:52Z&se=2030-12-09T10:23:52Z&sv=2022-11-02&sr=c&sig=xr2q5GXFY2%2B1LlehCaY41TTTjQPfotY%2BX8S70EYOEXM%3D
+
