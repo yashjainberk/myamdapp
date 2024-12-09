@@ -74,32 +74,27 @@ function FormUpload({ onUploadSuccess }) {
   // SSOT: UPDATE CASE METADATA IN JSON
   async function updateCaseMetadata(caseID, metadata) {
     try {
-      const blobSasUrl = 'https://amdupsynctest.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2026-08-08T06:58:12Z&st=2024-10-24T22:58:12Z&spr=https,http&sig=BeMYOypmexAYhYWexJYTSCjD1yf9Dw9y7KqKX1rROfI%3D';
-      const blobServiceClient = new BlobServiceClient(blobSasUrl);
-      const containerClient = blobServiceClient.getContainerClient('folders');
+        const blobSasUrl = 'https://amdupsynctest.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2026-08-08T06:58:12Z&st=2024-10-24T22:58:12Z&spr=https,http&sig=BeMYOypmexAYhYWexJYTSCjD1yf9Dw9y7KqKX1rROfI%3D';
+        const blobServiceClient = new BlobServiceClient(blobSasUrl);
+        const containerClient = blobServiceClient.getContainerClient('folders');
 
-      const caseMetadataBlobPath = `${caseType}/${caseID}/${caseID}.json`; 
-      const blobClient = containerClient.getBlockBlobClient(caseMetadataBlobPath);
+        // Define the path to the metadata file
+        const caseMetadataBlobPath = `${caseType}/${caseID}/${caseID}.json`; // Use JSON extension
+        const blobClient = containerClient.getBlockBlobClient(caseMetadataBlobPath);
 
-      const metadataJSON = JSON.stringify(metadata, null, 2);
-      // const newMetadata = Object.entries(metadata)
-      //   .map(([key, value]) => `${key}: ${value}`)
-      //   .join('\n');
+        // Convert metadata to JSON string with formatting
+        const metadataJSON = JSON.stringify(metadata, null, 2);
 
-      const sizeInBytes = new Blob([metadataJSON]).size;
+        // Upload the JSON string as a blob
+        await blobClient.upload(metadataJSON, Buffer.byteLength(metadataJSON), {
+            blobHTTPHeaders: { blobContentType: 'application/json' }, // Set MIME type to application/json
+        });
 
-      console.log('Uploading JSON metadata with size:', sizeInBytes);
-
-      await blobClient.upload(metadataJSON, sizeInBytes, {
-        blobHTTPHeaders: { blobContentType: 'application/json' }, 
-      });
-
-      console.log('Case metadata updated successfully');
+        console.log('Case metadata updated successfully');
     } catch (error) {
-      console.error('Error updating case metadata:', error);
+        console.error('Error updating case metadata:', error);
     }
   }
-
 
   // Handle file input change
   const handleFileChange = (event) => {
@@ -119,13 +114,11 @@ function FormUpload({ onUploadSuccess }) {
   }
 
   const createTags = () => {
-    let json_1 = {};
+    let json_1 = {}
 
-    // Create JSON where key is tag name and value is tag value, matched by index
+    // create a json where key is tag name and value is tag value and values are connected by list index
     for (let i = 0; i < tagNameList.length; i++) {
-        if (tagNameList[i] && tagValueList[i]) { // Ensure valid entries
-            json_1[tagNameList[i]] = tagValueList[i];
-        }
+      json_1[tagNameList[i]] = tagValueList[i];
     }
       // Add additional fields as tags
     if (caseType === 'media-inquiries') {
