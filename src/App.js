@@ -15,15 +15,8 @@ import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineDot from '@mui/lab/TimelineDot';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import './App.css';
-import FormUpload from './components/FormUpload'; // Import FormUpload component
+import FormUpload from './components/FormUpload'; 
 import TagFilter from "./components/TagFilter";
 import CreateCase from "./components/CreateCase";
 import EditCase from "./components/EditCase";
@@ -342,6 +335,14 @@ function App() {
          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
            Product Compliance
          </Typography>
+         {/** Button to Access Timeline **/}
+         <Button color="inherit" component={Link} to="/timeline">
+           Timeline
+         </Button>
+         {/** Button to Access Date-Range **/}
+         <Button color="inherit" component={Link} to="/date-range">
+           Date-Range
+         </Button>
          {/* Button to Create new Case*/}
          <Button color="inherit" component={Link} to="/create-case">
            Create Case
@@ -397,16 +398,6 @@ function App() {
            path="/"
            element={
              <>
-               {/* Buttons for Timeline and DateRange */}
-               <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-                <Button onClick={() => navigate('/timeline')}>
-                  Timeline
-                </Button>
-
-                <Button onClick={() => navigate('date-range')}>
-                  Date-Range
-                </Button>
-               </Box>
                {/* Search Bar with Autocomplete */}
                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
                  <Autocomplete
