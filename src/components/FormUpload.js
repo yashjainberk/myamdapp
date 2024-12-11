@@ -39,7 +39,7 @@ function FormUpload({ onUploadSuccess }) {
   // const [subpoenaDetails, setSubpoenaDetails] = useState('');
   // const [brokerInvestigationsDetails, setbrokerInvestigationsDetails] = useState('');
   // const [ceaseDesistDetails, setceaseDesistDetails] = useState('');
-  // const [counterfeitDetails, setcounterfeitDetails] = useState('');
+  // const [CounterfeitDetails, setCounterfeitDetails] = useState('');
   // const [customsSeizuresDetails, setcustomsSeizuresDetails] = useState('');
   // const [govtInquiriesDetails, setgovtInquiriesDetails] = useState('');
 
@@ -61,20 +61,20 @@ function FormUpload({ onUploadSuccess }) {
   const [ceaseDesistOpen, setceaseDesistOpen] = useState('');
 
   const caseTypes = [
-    { label: 'Media Inquiries', value: 'media-inquiries' },
-    { label: 'NGO Inquiries', value: 'ngo-inquiries' },
-    { label: 'Subpoenas', value: 'subpoenas' },
-    { label: 'Broker Investigations', value: 'broker-investigations' },
-    { label: 'Cease and Desist', value: 'cease-desist' },
-    { label: 'Counterfeit', value: 'counterfeit' },
-    { label: 'Customs Seizures', value: 'customs-seizures' },
-    { label: 'Govt Law Enforcement Inquiries', value: 'govt-inquiries' },
+    { label: 'Media Inquiries', value: 'Media Inquiries' },
+    { label: 'NGO Inquiries', value: 'NGO Inquiries' },
+    { label: 'Subpoenas', value: 'Subpoenas' },
+    { label: 'Broker Investigations', value: 'Broker Investigations' },
+    { label: 'Cease and Desist', value: 'Cease and Desist' },
+    { label: 'Counterfeit', value: 'Counterfeit' },
+    { label: 'Customs Seizures', value: 'Customs Seizures' },
+    { label: 'Govt Law Enforcement Inquiries', value: 'Govt & Law Enforcement Inquiries' },
   ];
 
   // SSOT: UPDATE CASE METADATA IN JSON
   async function updateCaseMetadata(caseID, metadata) {
     try {
-        const blobSasUrl = 'https://dvuemoresa.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2024-12-11T13:03:37Z&st=2024-12-11T05:03:37Z&sip=0.0.0.0-255.255.255.255&spr=https,http&sig=Hg3hh%2BRwvpcLpMfnIYUS5ERAJm77D8qH4UT9CeXLdDU%3D';
+        const blobSasUrl = 'https://dvuemoresa.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2030-12-11T14:14:30Z&st=2024-12-11T06:14:30Z&sip=0.0.0.0-255.255.255.255&spr=https,http&sig=W0ICAkbG5yG%2BFS1ycFFiSiechmCxF9orgKxeNoQT10g%3D';
         const blobServiceClient = new BlobServiceClient(blobSasUrl);
         const containerClient = blobServiceClient.getContainerClient('my-container');
 
@@ -121,7 +121,7 @@ function FormUpload({ onUploadSuccess }) {
       json_1[tagNameList[i]] = tagValueList[i];
     }
       // Add additional fields as tags
-    if (caseType === 'media-inquiries') {
+    if (caseType === 'Media Inquiries') {
       json_1['sourceOfMediaInquiry'] = mediaSource;
       json_1['incidentId'] = incID;
       json_1['country'] = country;
@@ -133,7 +133,7 @@ function FormUpload({ onUploadSuccess }) {
       json_1['carId'] = carID;
     }
 
-    if (caseType === 'customs-seizures') {
+    if (caseType === 'Customs Seizures') {
       json_1['customsPortAgency'] = customsPortAgency;
       json_1['destinationCountry'] = destinationCountry;
       json_1['seizureDate'] = seizureDate;
@@ -143,7 +143,7 @@ function FormUpload({ onUploadSuccess }) {
       json_1['bondAmount'] = bondAmount;
     }
 
-    if (caseType === 'govt-inquiries') {
+    if (caseType === 'Govt & Law Enforcement Inquiries') {
       json_1['incidentId'] = incID;
       json_1['incidentType'] = incidentType;
       json_1['country'] = country;
@@ -154,7 +154,7 @@ function FormUpload({ onUploadSuccess }) {
       json_1['carId'] = carID;
     }
 
-    if (caseType === 'cease-desist') {
+    if (caseType === 'Cease and Desist') {
       json_1['ceaseDesistOpen'] = ceaseDesistOpen;
       json_1['incidentId'] = incID;
       json_1['incidentType'] = incidentType;
@@ -166,7 +166,7 @@ function FormUpload({ onUploadSuccess }) {
       json_1['carId'] = carID;
     } 
 
-    if (caseType === 'counterfeit') {
+    if (caseType === 'Counterfeit') {
       json_1['infringementType'] = infringementType;
       json_1['originCountry'] = originCountry;
       json_1['locationRecovered'] = locationRecovered;
@@ -177,7 +177,7 @@ function FormUpload({ onUploadSuccess }) {
       json_1['totalQty'] = totalQTY;
     } 
 
-    if (caseType === 'broker-investigations') {
+    if (caseType === 'Broker Investigations') {
       json_1['incidentId'] = incID;
       json_1['incidentType'] = incidentType;
       json_1['country'] = country;
@@ -188,7 +188,7 @@ function FormUpload({ onUploadSuccess }) {
       json_1['carId'] = carID;
     } 
 
-    if (caseType === 'ngo-inquiries') {
+    if (caseType === 'NGO Inquiries') {
       json_1['ngoOrganization'] = ngoOrganization;
       json_1['incidentId'] = incID;
       json_1['incidentType'] = incidentType;
@@ -200,7 +200,7 @@ function FormUpload({ onUploadSuccess }) {
       json_1['carId'] = carID;
     }
 
-    if (caseType === 'subpoenas') {
+    if (caseType === 'Subpoenas') {
       json_1['subpoenaJurisdiction'] = subpoenaJurisdiction;
       json_1['subpoenaOpen'] = subpoenaOpen;
       json_1['incidentId'] = incID;
@@ -229,7 +229,7 @@ function FormUpload({ onUploadSuccess }) {
     }
 
     setUploading(true);
-    const blobSasUrl = 'https://dvuemoresa.blob.core.windows.net/my-container?sp=racwdli&st=2024-12-09T02:28:39Z&se=2030-12-20T10:28:39Z&sv=2022-11-02&sr=c&sig=IGBhvGq1JzWvbeDzzhE1bI%2Bo2ER1a2rbwcRoyVWyAIM%3D';
+    const blobSasUrl = 'https://dvuemoresa.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2030-12-11T14:14:30Z&st=2024-12-11T06:14:30Z&sip=0.0.0.0-255.255.255.255&spr=https,http&sig=W0ICAkbG5yG%2BFS1ycFFiSiechmCxF9orgKxeNoQT10g%3D';
     const blobServiceClient = new BlobServiceClient(blobSasUrl);
     const containerClient = blobServiceClient.getContainerClient('my-container');
 
@@ -306,36 +306,36 @@ function FormUpload({ onUploadSuccess }) {
   // Dynamically render case-type specific fields
   const renderCaseTypeSpecificFields = () => {
     switch (caseType) {
-      case 'media-inquiries':
+      case 'Media Inquiries':
         return (
             <MediaInquiries carID={carID} setcarID={setcarID} stateprovince={stateprovince} setstateprovince={setstateprovince} region={region} setregion={setregion} dateReported={dateReported} setdateReported={setdateReported} totalQTY={totalQTY} settotalQTY={settotalQTY} country={country} setcountry={setcountry} incidentType={incidentType} setincidentType={setincidentType} incID={incID} setincID={setincID} setTags={setTags} tags={tags} mediaSource={mediaSource} setMediaSource={setMediaSource} />
         );
-      case 'ngo-inquiries':
+      case 'NGO Inquiries':
         return (
             <NGOInquiries carID={carID} setcarID={setcarID} stateprovince={stateprovince} setstateprovince={setstateprovince} region={region} setregion={setregion} dateReported={dateReported} setdateReported={setdateReported} totalQTY={totalQTY} settotalQTY={settotalQTY} country={country} setcountry={setcountry} incidentType={incidentType} setincidentType={setincidentType} incID={incID} setincID={setincID} setTags={setTags} tags={tags} ngoOrganization={ngoOrganization} setNgoOrganization={setNgoOrganization} />
         );
-      case 'subpoenas':
+      case 'Subpoenas':
         return (
            <Subpoenas carID={carID} setcarID={setcarID} stateprovince={stateprovince} setstateprovince={setstateprovince} region={region} setregion={setregion} dateReported={dateReported} setdateReported={setdateReported} totalQTY={totalQTY} settotalQTY={settotalQTY} country={country} setcountry={setcountry} incidentType={incidentType} setincidentType={setincidentType} incID={incID} setincID={setincID} setTags={setTags} tags={tags} subpoenaJurisdiction={subpoenaJurisdiction} setSubpoenaJurisdiction={setSubpoenaJurisdiction} subpoenaOpen={subpoenaOpen} setSubpoenaOpen={setSubpoenaOpen} />
         );
         break;
-      case 'broker-investigations':
+      case 'Broker Investigations':
         return (
             <BrokerInvestigations carID={carID} setcarID={setcarID} stateprovince={stateprovince} setstateprovince={setstateprovince} region={region} setregion={setregion} dateReported={dateReported} setdateReported={setdateReported} totalQTY={totalQTY} settotalQTY={settotalQTY} country={country} setcountry={setcountry} incidentType={incidentType} setincidentType={setincidentType} incID={incID} setincID={setincID} setTags={setTags} tags={tags} />
         );
-      case 'cease-desist':
+      case 'Cease and Desist':
          return (
             <CeaseDesist carID={carID} setcarID={setcarID} stateprovince={stateprovince} setstateprovince={setstateprovince} region={region} setregion={setregion} dateReported={dateReported} setdateReported={setdateReported} totalQTY={totalQTY} settotalQTY={settotalQTY} country={country} setcountry={setcountry} incidentType={incidentType} setincidentType={setincidentType} incID={incID} setincID={setincID} setTags={setTags} tags={tags} ceaseDesistOpen={ceaseDesistOpen} setceaseDesistOpen={setceaseDesistOpen} />
          );
-      case 'counterfeit':
+      case 'Counterfeit':
         return (
             <Counterfeit carID={carID} setcarID={setcarID} stateprovince={stateprovince} setstateprovince={setstateprovince} region={region} setregion={setregion} dateReported={dateReported} setdateReported={setdateReported} totalQTY={totalQTY} settotalQTY={settotalQTY} country={country} setcountry={setcountry} incidentType={incidentType} setincidentType={setincidentType} incID={incID} setincID={setincID} setTags={setTags} tags={tags} infringementType={infringementType} setInfringementType={setInfringementType} originCountry={originCountry} setOriginCountry={setOriginCountry} locationRecovered={locationRecovered} setLocationRecovered={setLocationRecovered} bondAmount={bondAmount} setBondAmount={setBondAmount} />
         );
-      case 'customs-seizures':
+      case 'Customs Seizures':
         return (
             <CustomsSeizures carID={carID} setcarID={setcarID} stateprovince={stateprovince} setstateprovince={setstateprovince} region={region} setregion={setregion} dateReported={dateReported} setdateReported={setdateReported} totalQTY={totalQTY} settotalQTY={settotalQTY} country={country} setcountry={setcountry} incidentType={incidentType} setincidentType={setincidentType} incID={incID} setincID={setincID} setTags={setTags} tags={tags} customsPortAgency={customsPortAgency} setCustomsPortAgency={setCustomsPortAgency} destinationCountry={destinationCountry} setDestinationCountry={setDestinationCountry} seizureDate={seizureDate} setSeizureDate={setSeizureDate} infringementType={infringementType} setInfringementType={setInfringementType} originCountry={originCountry} setOriginCountry={setOriginCountry} locationRecovered={locationRecovered} setLocationRecovered={setLocationRecovered} bondAmount={bondAmount} setBondAmount={setBondAmount} />
         );
-      case 'govt-inquiries':
+      case 'Govt & Law Enforcement Inquiries':
         return (
             <GovtInquiries carID={carID} setcarID={setcarID} stateprovince={stateprovince} setstateprovince={setstateprovince} region={region} setregion={setregion} dateReported={dateReported} setdateReported={setdateReported} totalQTY={totalQTY} settotalQTY={settotalQTY} country={country} setcountry={setcountry} incidentType={incidentType} setincidentType={setincidentType} incID={incID} setincID={setincID} setTags={setTags} tags={tags} />
         );
