@@ -111,15 +111,15 @@ function App() {
  const [tagInfo, setTagInfo] = useState({ valueMap: {}, allKeys: [] }); // State for tag value map
  const [filteredFiles, setFilteredFiles] = useState(null); // State for filtered files
  const [incidentMetadata, setIncidentMetadata] = useState(null); // Metadata for selected IncID
- const tableNames = ["Master Data", "Entities", "Product Analysis"]; // The three SQL tables
+ const tableNames = ["Master", "Entities", "Product Analysis"]; // The three SQL tables
  const [columnsData, setColumnsData] = useState({});
   const [selectedColumns, setSelectedColumns] = useState({
-    "Master Data": [],
+    "Master": [],
     "Entities": [],
     "Product Analysis": [],
   });
   const [tableData, setTableData] = useState({
-    "Master Data": [],
+    "Master": [],
     "Entities": [],
     "Product Analysis": [],
   });
@@ -262,7 +262,7 @@ const handleColumnChange = (tableName, columns) => {
 
  const getAllFiles = () => {
    if (!data || !data.folders) {
-     console.log("No data or folders found");
+     //console.log("No data or folders found");
      return [];
    }
 
