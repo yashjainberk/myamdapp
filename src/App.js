@@ -185,7 +185,8 @@ function App() {
     try {
       const columns = {};
       for (const table of tableNames) {
-        const response = await axios.get('http://127.0.0.1:5000/get-columns', { params: { table } });
+        console.log("columns called")
+        const response = await axios.get('https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get-columns?code=WgwVqW2Iph7PUE_BFYLV6E_BBUqtKfLVJmVj91As03O8AzFuxji1vA%3D%3D', { params: { table } });
         columns[table] = response.data.columns;
       }
       setColumnsData(columns);
@@ -199,7 +200,7 @@ function App() {
 
 const fetchTableData = async () => {
   try {
-    const response = await axios.post('http://127.0.0.1:5000/get-incident', {
+    const response = await axios.post('https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get-incident?code=-RE09plkVuSNWm16i5RynbQe1k72N1QK2ldN0bJPDL5xAzFust8mbg%3D%3D', {
       incidentID: selectedSubfolder,
       tables: selectedColumns,
     });
@@ -221,7 +222,7 @@ const handleColumnChange = (tableName, columns) => {
  const fetchIncidentMetadata = async (incidentID) => {
   console.log('here')
    try {
-     const response = await axios.get('http://127.0.0.1:5000/get-metadata', {
+     const response = await axios.get('https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get-metadata?code=6pQwfRJTZMJnlUIVNth_djfjFNfD0D7gvOwn1AJSWqX8AzFuQag61g%3D%3D', {
        params: { incidentID: incidentID }
      });
      
@@ -236,7 +237,7 @@ const handleColumnChange = (tableName, columns) => {
 
  const handleSubfolderClick = (subfolderName) => {
    setSelectedSubfolder(subfolderName);
-   fetchIncidentMetadata(subfolderName); // Fetch metadata when subfolder is clicked
+   //fetchIncidentMetadata(subfolderName); // Fetch metadata when subfolder is clicked
  };
 
 
