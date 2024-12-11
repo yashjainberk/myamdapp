@@ -74,7 +74,7 @@ function FormUpload({ onUploadSuccess }) {
   // SSOT: UPDATE CASE METADATA IN JSON
   async function updateCaseMetadata(caseID, metadata) {
     try {
-        const blobSasUrl = 'https://dvuemoresa.blob.core.windows.net/my-container?sp=racwdli&st=2024-12-09T02:28:39Z&se=2030-12-20T10:28:39Z&sv=2022-11-02&sr=c&sig=IGBhvGq1JzWvbeDzzhE1bI%2Bo2ER1a2rbwcRoyVWyAIM%3D';
+        const blobSasUrl = 'https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_data_by_incid?code=R8ilmVIbxvUlIneVlUaH8XSHzw-re81Bge7li0jHf0-GAzFu-F-7mQ%3D%3D';
         const blobServiceClient = new BlobServiceClient(blobSasUrl);
         const containerClient = blobServiceClient.getContainerClient('my-container');
 
@@ -229,7 +229,7 @@ function FormUpload({ onUploadSuccess }) {
     }
 
     setUploading(true);
-    const blobSasUrl = 'https://dvuemoresa.blob.core.windows.net/my-container?sp=racwdli&st=2024-12-09T02:28:39Z&se=2030-12-20T10:28:39Z&sv=2022-11-02&sr=c&sig=IGBhvGq1JzWvbeDzzhE1bI%2Bo2ER1a2rbwcRoyVWyAIM%3D';
+    const blobSasUrl = 'https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_data_by_incid?code=R8ilmVIbxvUlIneVlUaH8XSHzw-re81Bge7li0jHf0-GAzFu-F-7mQ%3D%3D';
     const blobServiceClient = new BlobServiceClient(blobSasUrl);
     const containerClient = blobServiceClient.getContainerClient('my-container');
 
