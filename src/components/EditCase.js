@@ -3,6 +3,7 @@ import { TextField, Button, Grid, MenuItem, FormControlLabel, Checkbox } from '@
 import axios from 'axios';
 
 function EditCase({ onEditSuccess }) {
+  const [incID, setIncID] = useState("")
   const [formData, setFormData] = useState({
     "IncID": '',
     "Date_Reported": '',
@@ -74,7 +75,7 @@ function EditCase({ onEditSuccess }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!formData["IncID"]) {
+    if (!incID) {
       setError('Incident ID is required.');
       return;
     }
@@ -91,8 +92,8 @@ function EditCase({ onEditSuccess }) {
       await axios.post(
         "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/editIncident?code=rqXvfobQfdPocsLeWDINcwqeIIyg0KOutc3hpvpTgj2vAzFuMNVa-w%3D%3D", 
         {
-          'incID': formData['IncID'],
-          updatedData
+          IncID: incID,
+          editFields: updatedData
         }
       )
         .then(response => {
@@ -121,8 +122,11 @@ function EditCase({ onEditSuccess }) {
         <Grid item xs={12}>
           <TextField
             label="Incident ID"
-            value={formData.incID}
-            onChange={(e) => setFormData({...formData, incID: e.target.value})}
+            value={incID}
+            onChange={(e) => {
+              setIncID(e.target.value)
+              setFormData({...formData, incID: e.target.value})
+            }}
             fullWidth
             required
             error={!!error}

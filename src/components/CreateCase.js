@@ -29,16 +29,16 @@ function CreateCase({ onUploadSuccess }) {
   const [infringementType, setInfringementType] = useState('');
 
   // Subpoena and Cease & Desist Fields
-  const [subpoena, setSubpoena] = useState(false);
-  const [subpoenaOpen, setSubpoenaOpen] = useState(false);
-  const [ceaseDesist, setCeaseDesist] = useState(false);
-  const [ceaseDesistOpen, setCeaseDesistOpen] = useState(false);
+  const [subpoena, setSubpoena] = useState("");
+  const [subpoenaOpen, setSubpoenaOpen] = useState("");
+  const [ceaseDesist, setCeaseDesist] = useState("");
+  const [ceaseDesistOpen, setCeaseDesistOpen] = useState("");
 
   // Additional Boolean Fields
-  const [dueDiligence, setDueDiligence] = useState(false);
-  const [enhancedDueDiligence, setEnhancedDueDiligence] = useState(false);
-  const [enhanced, setEnhanced] = useState(false);
-  const [image, setImage] = useState(false);
+  const [dueDiligence, setDueDiligence] = useState("");
+  const [enhancedDueDiligence, setEnhancedDueDiligence] = useState("");
+  const [enhanced, setEnhanced] = useState("");
+  const [image, setImage] = useState("");
 
   // Notes
   const [notes, setNotes] = useState('');
@@ -144,11 +144,29 @@ function CreateCase({ onUploadSuccess }) {
     <form onSubmit={handleSubmit}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <TextField label="Case Name" variant="outlined" fullWidth value={caseInfo} onChange={(e) => setCaseInfo(e.target.value)} required />
+          <TextField 
+            label="Case Name" 
+            variant="outlined" 
+            fullWidth 
+            value={caseInfo} 
+            onChange={(e) => setCaseInfo(e.target.value)} 
+            required />
         </Grid>
         <Grid item xs={12}>
-          <TextField select label="Case Type" variant="outlined" fullWidth value={caseType} onChange={(e) => setCaseType(e.target.value)} required>
-            {/* Case types */}
+          <TextField 
+            select label="Case Type" 
+            variant="outlined" 
+            fullWidth 
+            value={caseType} 
+            onChange={(e) => setCaseType(e.target.value)} 
+            required>
+            <MenuItem value="Customs Seizure"> Customs Seizure </MenuItem>
+            <MenuItem value="Federal Gov Inv"> Federal Gov Inv </MenuItem>
+            <MenuItem value="Media Inquiry"> Media Inquiry </MenuItem>
+            <MenuItem value="Ngo Inquiry"> NGO Inquiry </MenuItem>
+            <MenuItem value="Internal Investigations"> Internal Investigations </MenuItem>
+            <MenuItem value="Counterfeit"> Counterfeit </MenuItem>
+            
           </TextField>
         </Grid>
 
@@ -203,47 +221,47 @@ function CreateCase({ onUploadSuccess }) {
 
         {/* Subpoena, Cease & Desist, and Additional Booleans */}
         <Grid item xs={6}>
-            <TextField select label="Subpoena" variant="outlined" fullWidth value={subpoena} onChange={(e) => setSubpoena(e.target.value)}>
-            <MenuItem value="product">Product</MenuItem>
-            <MenuItem value="no">No</MenuItem>
-            <MenuItem value="n/a">N/A</MenuItem>
+            <TextField select label="Subpoena" variant="outlined" fullWidth value={subpoena} onChange={(e) => setSubpoena(e.target.value)} >
+              <MenuItem value="product">Product</MenuItem>
+              <MenuItem value="no">No</MenuItem>
+              <MenuItem value="n/a">N/A</MenuItem>
             </TextField>
         </Grid>
         <Grid item xs={6}>
             <TextField select label="Subpoena Open/Closed" variant="outlined" fullWidth value={subpoenaOpen} onChange={(e) => setSubpoenaOpen(e.target.value)}>
-            <MenuItem value="open">Open</MenuItem>
-            <MenuItem value="closed">Closed</MenuItem>
-            <MenuItem value="n/a">N/A</MenuItem>
+              <MenuItem value="open">Open</MenuItem>
+              <MenuItem value="closed">Closed</MenuItem>
+              <MenuItem value="n/a">N/A</MenuItem>
             </TextField>
         </Grid>
         <Grid item xs={6}>
             <TextField select label="Cease & Desist" variant="outlined" fullWidth value={ceaseDesist} onChange={(e) => setCeaseDesist(e.target.value)}>
-            <MenuItem value="yes">Yes</MenuItem>
-            <MenuItem value="no">No</MenuItem>
-            <MenuItem value="n/a">N/A</MenuItem>
+              <MenuItem value="yes">Yes</MenuItem>
+              <MenuItem value="no">No</MenuItem>
+              <MenuItem value="n/a">N/A</MenuItem>
             </TextField>
         </Grid>
         <Grid item xs={6}>
             <TextField select label="Cease & Desist Open/Closed" variant="outlined" fullWidth value={ceaseDesistOpen} onChange={(e) => setCeaseDesistOpen(e.target.value)}>
-            <MenuItem value="open">Open</MenuItem>
-            <MenuItem value="closed">Closed</MenuItem>
-            <MenuItem value="n/a">N/A</MenuItem>
+              <MenuItem value="open">Open</MenuItem>
+              <MenuItem value="closed">Closed</MenuItem>
+              <MenuItem value="n/a">N/A</MenuItem>
             </TextField>
         </Grid>
 
         <Grid item xs={6}>
             <TextField select label="Due Diligence" variant="outlined" fullWidth value={dueDiligence} onChange={(e) => setDueDiligence(e.target.value)}>
-            <MenuItem value="yes">Yes</MenuItem>
-            <MenuItem value="no">No</MenuItem>
-            <MenuItem value="n/a">N/A</MenuItem>
+              <MenuItem value="yes">Yes</MenuItem>
+              <MenuItem value="no">No</MenuItem>
+              <MenuItem value="n/a">N/A</MenuItem>
             </TextField>
         </Grid>
 
         <Grid item xs={6}>
             <TextField select label="Enhanced Due Diligence" variant="outlined" fullWidth value={enhancedDueDiligence} onChange={(e) => setEnhancedDueDiligence(e.target.value)}>
-            <MenuItem value="yes">Yes</MenuItem>
-            <MenuItem value="no">No</MenuItem>
-            <MenuItem value="n/a">N/A</MenuItem>
+              <MenuItem value="yes">Yes</MenuItem>
+              <MenuItem value="no">No</MenuItem>
+              <MenuItem value="n/a">N/A</MenuItem>
             </TextField>
         </Grid>
 
