@@ -5,7 +5,6 @@ import axios from 'axios';
 function CreateCase({ onUploadSuccess }) {
   const [caseInfo, setCaseInfo] = useState('');  // State for case information input
   const [file, setFile] = useState(null);        // State for the file to be uploaded
-  const [caseType, setCaseType] = useState('');  // State for the selected case type
   const [uploading, setUploading] = useState(false);  // State to show upload progress
   const [error, setError] = useState('')
 
@@ -29,16 +28,16 @@ function CreateCase({ onUploadSuccess }) {
   const [infringementType, setInfringementType] = useState('');
 
   // Subpoena and Cease & Desist Fields
-  const [subpoena, setSubpoena] = useState(false);
-  const [subpoenaOpen, setSubpoenaOpen] = useState(false);
-  const [ceaseDesist, setCeaseDesist] = useState(false);
-  const [ceaseDesistOpen, setCeaseDesistOpen] = useState(false);
+  const [subpoena, setSubpoena] = useState("");
+  const [subpoenaOpen, setSubpoenaOpen] = useState("");
+  const [ceaseDesist, setCeaseDesist] = useState("");
+  const [ceaseDesistOpen, setCeaseDesistOpen] = useState("");
 
   // Additional Boolean Fields
-  const [dueDiligence, setDueDiligence] = useState(false);
-  const [enhancedDueDiligence, setEnhancedDueDiligence] = useState(false);
-  const [enhanced, setEnhanced] = useState(false);
-  const [image, setImage] = useState(false);
+  const [dueDiligence, setDueDiligence] = useState("");
+  const [enhancedDueDiligence, setEnhancedDueDiligence] = useState("");
+  const [enhanced, setEnhanced] = useState("");
+  const [image, setImage] = useState("");
 
   // Notes
   const [notes, setNotes] = useState('');
@@ -70,7 +69,7 @@ function CreateCase({ onUploadSuccess }) {
         "Region": region,
         "Country": country,
         "State_Province": stateProvince,
-        "CarID": carID,
+        "Car_ID": carID,
         "Customs_Port_Agency": customsPortAgency,
         "Destination_Country": destinationCountry,
         "Country_Of_Origin": originCountry,
@@ -78,33 +77,35 @@ function CreateCase({ onUploadSuccess }) {
         "Seizure_Date": seizureDate,
         "Bond_Amount": bondAmount,
         "Customs_IPR_Infringement_Type": infringementType,
-        "Subpoena": subpoena.toString(),
-        "Subpoena_Open_Closed": subpoenaOpen.toString(),
-        "C_D": ceaseDesist.toString(),
-        "C_D_Open_Closed": ceaseDesistOpen.toString(),
-        "Due_Diligence": dueDiligence.toString(),
-        "Enhanced_Due_Diligence": enhanced.toString(),
-        "Image": image.toString(),
+        "Subpoena": subpoena,
+        "Subpoena_Open_Closed": subpoenaOpen,
+        "C_D": ceaseDesist,
+        "C_D_Open_Closed": ceaseDesistOpen,
+        "Due_Diligence": dueDiligence,
+        "Enhanced_Due_Diligence": enhanced,
+        "Image": image,
         "Notes": notes
       };
 
-        await axios.post(
-          "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/createIncident?code=Vw53NBGGKU4GflS0-SoxE-u0nZiEGEkIIz3tqUBNqZefAzFuPu89LA%3D%3D", 
-          payload
-        )
-          .then(response => {
-            console.log('Response:', response.data);
-          })
-          .catch(error => {
-            console.error('Error:', error.response ? error.response.data : error.message);
-          });
-        
-        alert('Entry created successfully!');
-        resetForm();
-        
-        if (onUploadSuccess) {
-            onUploadSuccess();
-        }
+      console.log(payload)
+
+      await axios.post(
+        "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/createIncident?code=Vw53NBGGKU4GflS0-SoxE-u0nZiEGEkIIz3tqUBNqZefAzFuPu89LA%3D%3D", 
+        payload
+      )
+        .then(response => {
+          console.log('Response:', response.data);
+        })
+        .catch(error => {
+          console.error('Error:', error.response ? error.response.data : error.message);
+        });
+      
+      alert('Entry created successfully!');
+      resetForm();
+      
+      if (onUploadSuccess) {
+          onUploadSuccess();
+      }
     } catch (error) {
         console.error('Error creating entry:', error);
         setError(error.message || 'Error creating entry. Please try again.');
@@ -114,6 +115,7 @@ function CreateCase({ onUploadSuccess }) {
   };
 
   const resetForm = () => {
+    setCaseInfo('')
     setIncID('');
     setDateReported('');
     setIncidentType('');
@@ -129,14 +131,14 @@ function CreateCase({ onUploadSuccess }) {
     setSeizureDate('');
     setBondAmount('');
     setInfringementType('');
-    setSubpoena(false);
-    setSubpoenaOpen(false);
-    setCeaseDesist(false);
-    setCeaseDesistOpen(false);
-    setDueDiligence(false);
-    setEnhancedDueDiligence(false);
-    setEnhanced(false);
-    setImage(false);
+    setSubpoena('');
+    setSubpoenaOpen('');
+    setCeaseDesist('');
+    setCeaseDesistOpen('');
+    setDueDiligence('');
+    setEnhancedDueDiligence('');
+    setEnhanced('');
+    setImage('');
     setNotes('');
   };
 
@@ -144,23 +146,37 @@ function CreateCase({ onUploadSuccess }) {
     <form onSubmit={handleSubmit}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <TextField label="Case Name" variant="outlined" fullWidth value={caseInfo} onChange={(e) => setCaseInfo(e.target.value)} required />
+          <TextField 
+            label="Case Name" 
+            variant="outlined" 
+            fullWidth 
+            value={caseInfo} 
+            onChange={(e) => setCaseInfo(e.target.value)} 
+            required />
         </Grid>
         <Grid item xs={12}>
-          <TextField select label="Case Type" variant="outlined" fullWidth value={caseType} onChange={(e) => setCaseType(e.target.value)} required>
-            {/* Case types */}
+          <TextField 
+            select label="Case Type" 
+            variant="outlined" 
+            fullWidth 
+            value={incidentType} 
+            onChange={(e) => setIncidentType(e.target.value)} 
+            required>
+            <MenuItem value="Customs Seizure"> Customs Seizure </MenuItem>
+            <MenuItem value="Federal Gov Inv"> Federal Gov Inv </MenuItem>
+            <MenuItem value="Media Inquiry"> Media Inquiry </MenuItem>
+            <MenuItem value="Ngo Inquiry"> NGO Inquiry </MenuItem>
+            <MenuItem value="Internal Investigations"> Internal Investigations </MenuItem>
+            <MenuItem value="Counterfeit"> Counterfeit </MenuItem>
           </TextField>
         </Grid>
 
         {/* Universal Fields */}
         <Grid item xs={6}>
-          <TextField label="Incident ID" variant="outlined" fullWidth value={incID} onChange={(e) => setIncID(e.target.value)} />
+          <TextField label="Incident ID" variant="outlined" fullWidth value={incID} onChange={(e) => setIncID(e.target.value)} required />
         </Grid>
         <Grid item xs={6}>
-          <TextField label="Date Reported" type="date" InputLabelProps={{ shrink: true }} variant="outlined" fullWidth value={dateReported} onChange={(e) => setDateReported(e.target.value)} />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField label="Incident Type" variant="outlined" fullWidth value={incidentType} onChange={(e) => setIncidentType(e.target.value)} />
+          <TextField label="Date Reported" type="date" InputLabelProps={{ shrink: true }} variant="outlined" fullWidth value={dateReported} onChange={(e) => setDateReported(e.target.value)} required />
         </Grid>
         <Grid item xs={6}>
           <TextField label="Total QTY" variant="outlined" fullWidth value={totalQTY} onChange={(e) => setTotalQTY(e.target.value)} />
@@ -203,47 +219,47 @@ function CreateCase({ onUploadSuccess }) {
 
         {/* Subpoena, Cease & Desist, and Additional Booleans */}
         <Grid item xs={6}>
-            <TextField select label="Subpoena" variant="outlined" fullWidth value={subpoena} onChange={(e) => setSubpoena(e.target.value)}>
-            <MenuItem value="product">Product</MenuItem>
-            <MenuItem value="no">No</MenuItem>
-            <MenuItem value="n/a">N/A</MenuItem>
+            <TextField select label="Subpoena" variant="outlined" fullWidth value={subpoena} onChange={(e) => setSubpoena(e.target.value)} >
+              <MenuItem value="product">Product</MenuItem>
+              <MenuItem value="no">No</MenuItem>
+              <MenuItem value="n/a">N/A</MenuItem>
             </TextField>
         </Grid>
         <Grid item xs={6}>
             <TextField select label="Subpoena Open/Closed" variant="outlined" fullWidth value={subpoenaOpen} onChange={(e) => setSubpoenaOpen(e.target.value)}>
-            <MenuItem value="open">Open</MenuItem>
-            <MenuItem value="closed">Closed</MenuItem>
-            <MenuItem value="n/a">N/A</MenuItem>
+              <MenuItem value="open">Open</MenuItem>
+              <MenuItem value="closed">Closed</MenuItem>
+              <MenuItem value="n/a">N/A</MenuItem>
             </TextField>
         </Grid>
         <Grid item xs={6}>
             <TextField select label="Cease & Desist" variant="outlined" fullWidth value={ceaseDesist} onChange={(e) => setCeaseDesist(e.target.value)}>
-            <MenuItem value="yes">Yes</MenuItem>
-            <MenuItem value="no">No</MenuItem>
-            <MenuItem value="n/a">N/A</MenuItem>
+              <MenuItem value="yes">Yes</MenuItem>
+              <MenuItem value="no">No</MenuItem>
+              <MenuItem value="n/a">N/A</MenuItem>
             </TextField>
         </Grid>
         <Grid item xs={6}>
             <TextField select label="Cease & Desist Open/Closed" variant="outlined" fullWidth value={ceaseDesistOpen} onChange={(e) => setCeaseDesistOpen(e.target.value)}>
-            <MenuItem value="open">Open</MenuItem>
-            <MenuItem value="closed">Closed</MenuItem>
-            <MenuItem value="n/a">N/A</MenuItem>
+              <MenuItem value="open">Open</MenuItem>
+              <MenuItem value="closed">Closed</MenuItem>
+              <MenuItem value="n/a">N/A</MenuItem>
             </TextField>
         </Grid>
 
         <Grid item xs={6}>
             <TextField select label="Due Diligence" variant="outlined" fullWidth value={dueDiligence} onChange={(e) => setDueDiligence(e.target.value)}>
-            <MenuItem value="yes">Yes</MenuItem>
-            <MenuItem value="no">No</MenuItem>
-            <MenuItem value="n/a">N/A</MenuItem>
+              <MenuItem value="yes">Yes</MenuItem>
+              <MenuItem value="no">No</MenuItem>
+              <MenuItem value="n/a">N/A</MenuItem>
             </TextField>
         </Grid>
 
         <Grid item xs={6}>
             <TextField select label="Enhanced Due Diligence" variant="outlined" fullWidth value={enhancedDueDiligence} onChange={(e) => setEnhancedDueDiligence(e.target.value)}>
-            <MenuItem value="yes">Yes</MenuItem>
-            <MenuItem value="no">No</MenuItem>
-            <MenuItem value="n/a">N/A</MenuItem>
+              <MenuItem value="yes">Yes</MenuItem>
+              <MenuItem value="no">No</MenuItem>
+              <MenuItem value="n/a">N/A</MenuItem>
             </TextField>
         </Grid>
 

@@ -20,6 +20,7 @@ export default function DateRangeCaseFinder() {
     const [selectedCaseData, setSelectedCaseData] = useState(null)
     const [selectedCases, setSelectedCases] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
+    const [allData, setAllData] = useState(null)
 
     const [selectedCaseType, setSelectedCaseType] = useState('All');
     const caseTypes = ['All', 'Federal Gov Inv', 'Media Inquiry', 'Customs Seizure', 'NGO Inquiry', 'Broker Investigations', 'Counterfeit'];
@@ -39,17 +40,22 @@ export default function DateRangeCaseFinder() {
         }
     };
 
-    // Fetch data for a specific incident ID
-    const fetchIncidentData = async (incidentID) => {
+    const fetchAllData = async () => {
         try {
-            const response = await axios.get("https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_data_by_incid?code=R8ilmVIbxvUlIneVlUaH8XSHzw-re81Bge7li0jHf0-GAzFu-F-7mQ%3D%3D", {
-                params: { 'incidentID': incidentID },
-            });
-            return response.data;
+            setLoading(true);
+            const response = await axios.get(
+                "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_all_data?code=zi5qosTGeAbbKLEm2P8ZY1M7721MwGPoP0PqMTI6oQiZAzFuWr3GNQ%3D%3D"
+            );
+        
+            setAllData(response.data);
         } catch (err) {
-            console.error(`Error fetching data for incident ${incidentID}:`, err);
+            console.error(`Error fetching all data:`, err);
             throw err;
         }
+    }
+
+    const fetchIncidentData = async (incidentID) => {
+        return allData.filter(incident => incident.IncID == incidentID)
     };
 
     const handleOpenModal = () => {
@@ -116,6 +122,7 @@ export default function DateRangeCaseFinder() {
     // Initialize the list of incidents on component mount
     useEffect(() => {
         fetchAllIncIDs();
+        fetchAllData();
     }, []);
 
     return (

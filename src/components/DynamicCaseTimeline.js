@@ -54,6 +54,7 @@ export default function DynamicCaseTimeline() {
     const [selectedCaseType, setSelectedCaseType] = useState('All');
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedCaseData, setSelectedCaseData] = useState(null);
+    const [allData, setAllData] = useState(null)
 
     const caseTypes = ['All', 'Federal Gov Inv', 'Media Inquiry', 'Customs Seizure', 'NGO Inquiry', 'Broker Investigations', 'Counterfeit'];
 
@@ -83,27 +84,27 @@ export default function DynamicCaseTimeline() {
         }
     };
 
-    useEffect(() => {
-        fetchAllIncIDs();
-        console.log(incList)
-    }, [selectedCaseType]);
-
-    const fetchIncidentData = async (incidentID) => {
+    const fetchAllData = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_data_by_incid?code=R8ilmVIbxvUlIneVlUaH8XSHzw-re81Bge7li0jHf0-GAzFu-F-7mQ%3D%3D",
-                {
-                    params: { 'incidentID' : incidentID  },
-                }
+                "https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_all_data?code=zi5qosTGeAbbKLEm2P8ZY1M7721MwGPoP0PqMTI6oQiZAzFuWr3GNQ%3D%3D"
             );
-            
-            console.log(response.data)
-            return response.data;
+        
+            setAllData(response.data);
         } catch (err) {
-            console.error(`Error fetching data for incident ${incidentID}:`, err);
+            console.error(`Error fetching all data:`, err);
             throw err;
         }
+    }
+
+    useEffect(() => {
+        fetchAllIncIDs();
+        fetchAllData();
+    }, [selectedCaseType]);
+
+    const fetchIncidentData = async (incidentID) => {
+        return allData.filter(incident => incident.IncID == incidentID)
     };
 
     const handleIncidentSelect = (event) => {
