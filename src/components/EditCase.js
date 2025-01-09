@@ -12,7 +12,7 @@ function EditCase({ onEditSuccess }) {
     "Region": '',
     "Country": '',
     "State_Province": '',
-    "CarID": '',
+    "Car_ID": '',
     "Customs_Port_Agency": '',
     "Destination_Country": '',
     "Country_Of_Origin": '',
