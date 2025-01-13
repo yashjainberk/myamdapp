@@ -22,6 +22,8 @@ import CreateCase from "./components/CreateCase";
 import EditCase from "./components/EditCase";
 import DynamicCaseTimeline from './components/DynamicCaseTimeline';
 import DateRangeCaseFinder from './components/DateRangeCaseFinder';
+import FolderNameManager from './components/FolderNameManager';
+
 
 // ***** Added imports for PDF Viewer integration *****
 import { Viewer, Worker } from '@react-pdf-viewer/core';
@@ -111,7 +113,9 @@ function App() {
  const [tagInfo, setTagInfo] = useState({ valueMap: {}, allKeys: [] }); // State for tag value map
  const [filteredFiles, setFilteredFiles] = useState(null); // State for filtered files
  const [incidentMetadata, setIncidentMetadata] = useState(null); // Metadata for selected IncID
-
+ const [isRenamingFolder, setIsRenamingFolder] = useState(false);
+ const [folderBeingEdited, setFolderBeingEdited] = useState(null);
+ const [folderMetadata, setFolderMetadata] = useState({});
  // ***** Added for PDF viewer integration *****
  const defaultLayoutPluginInstance = defaultLayoutPlugin();
  // ********************************************
@@ -320,6 +324,41 @@ function App() {
    }
  };
 
+ const handleRenameClick = (e, folderName) => {
+    e.stopPropagation(); 
+    setFolderBeingEdited(folderName);
+    setIsRenamingFolder(true);
+  };
+
+  const fetchFolderName = async (folderPath) => {
+    try {
+      const metadataPath = `https://dvuemoresa.blob.core.windows.net/my-container/${folderPath}/.metadata.json`;
+      const response = await fetch(metadataPath);
+      if (response.ok) {
+        const metadata = await response.json();
+        return metadata.displayName;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching metadata:', error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if (selectedFolder && data?.folders[selectedFolder]) {
+      Object.keys(data.folders[selectedFolder]).forEach(async (subfolderName) => {
+        const displayName = await fetchFolderName(`${selectedFolder}/${subfolderName}`);
+        if (displayName) {
+          setFolderMetadata(prev => ({
+            ...prev,
+            [subfolderName]: displayName
+          }));
+        }
+      });
+    }
+  }, [selectedFolder, data, folderBeingEdited]);
+
 
  return (
    <ThemeProvider theme={theme}>
@@ -466,8 +505,25 @@ function App() {
                          <FolderCard onClick={() => handleSubfolderClick(subfolderName)}>
                            <CardActionArea>
                              <CardContent>
-                               <Typography variant="h6">{subfolderName}</Typography>
+                               <Typography variant="h6">{folderMetadata[subfolderName] ||  subfolderName}</Typography>
                                <Typography variant="body2">Click to view files</Typography>
+                               <Button 
+                                  onClick={(e) => handleRenameClick(e, `${selectedFolder}/${subfolderName}`)}
+                                  variant="contained"
+                                  size="small"
+                                  sx={{ mt: 1 }}
+                                >
+                                  Rename Case
+                                </Button>
+                                {isRenamingFolder && folderBeingEdited == `${selectedFolder}/${subfolderName}` && (
+                                  <FolderNameManager 
+                                    folderPath={`${selectedFolder}/${subfolderName}`}
+                                    onClose={() => {
+                                      setIsRenamingFolder(false)
+                                      setFolderBeingEdited(null)
+                                    }}
+                                  />
+                                )}
                              </CardContent>
                            </CardActionArea>
                          </FolderCard>
@@ -488,7 +544,7 @@ function App() {
                    {/* Render Files in Selected Subfolder */}
                    {selectedSubfolder && data.folders[selectedFolder][selectedSubfolder] && (
                      <Box mt={5}>
-                       <Typography variant="h5">Files in {selectedSubfolder}</Typography>
+                       <Typography variant="h5">Files in {folderMetadata[subfolderName] ||  subfolderName}</Typography>
                        <Grid container spacing={3}>
                          {data.folders[selectedFolder][selectedSubfolder].files.map((file, index) => {
                            const fileExtension = file.file_name.split('.').pop().toLowerCase();
