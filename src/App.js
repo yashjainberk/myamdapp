@@ -173,7 +173,7 @@ function App() {
           { params: { containerName: 'my-container' } }
         );
 
-        setData(response.data); // Set fetched data to state
+        setData(response.data)
         setLoading(false); // Set loading to false after fetching
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -205,7 +205,7 @@ function App() {
 
   const fetchTableData = async () => {
     try {
-      const response = await axios.post(
+      const response = await axios.get(
         'https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get-incident?code=-RE09plkVuSNWm16i5RynbQe1k72N1QK2ldN0bJPDL5xAzFust8mbg%3D%3D',
         {
           incidentID: incidentIDInput,
@@ -374,8 +374,8 @@ function App() {
 const fetchFolderName = async (folderPath) => {
     try {
       const metadataPath = `https://dvuemoresa.blob.core.windows.net/my-container/${folderPath}/.metadata.json`;
-      if (response.ok) {
       const response = await fetch(metadataPath);
+      if (response.ok) {
         const metadata = await response.json();
         return metadata.displayName;
       }
@@ -385,6 +385,20 @@ const fetchFolderName = async (folderPath) => {
       return null;
     }
   };
+
+  useEffect(() => {
+    if (selectedFolder && data?.folders[selectedFolder]) {
+      Object.keys(data.folders[selectedFolder]).forEach(async (subfolderName) => {
+        const displayName = await fetchFolderName(`${selectedFolder}/${subfolderName}`);
+        if (displayName) {
+          setFolderMetadata(prev => ({
+            ...prev,
+            [subfolderName]: displayName
+          }));
+        }
+      });
+    }
+  }, [selectedFolder, data, folderBeingEdited]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -631,7 +645,14 @@ const fetchFolderName = async (folderPath) => {
                  <Box mt={5}>
                    <Typography variant="h5">Subfolders</Typography>
                    <Grid container spacing={3}>
-                     {Object.entries(data.folders[selectedFolder]).map(([subfolderName, filesInfo]) => (
+                     {Object.entries(data.folders[selectedFolder])
+                     .filter(([subfolderName, filesInfo]) => {
+                      // Remove subfolders and folder_creation_time
+                        console.log(folderMetadata[subfolderName])
+                        const { subfolders, folder_creation_time, ...rest } = filesInfo;
+                        return Object.keys(rest).length > 0;
+                     })
+                     .map(([subfolderName, filesInfo]) => (
                        <Grid item xs={12} sm={6} md={4} key={subfolderName}>
                          {/* Click to set the selected subfolder */}
                          <FolderCard onClick={() => handleSubfolderClick(subfolderName)}>
@@ -639,7 +660,7 @@ const fetchFolderName = async (folderPath) => {
                              <CardContent>
                                <Typography variant="h6">{folderMetadata[subfolderName] ||  subfolderName}</Typography>
                                <Typography variant="body2">Click to view files</Typography>
-                               <Button 
+                               <Button  
                                   onClick={(e) => handleRenameClick(e, `${selectedFolder}/${subfolderName}`)}
                                   variant="contained"
                                   size="small"
@@ -750,13 +771,37 @@ const fetchFolderName = async (folderPath) => {
                           border: '1px solid #ccc' 
                         }}
                       >
-                        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
                           <Viewer
                             fileUrl={fileContent}
                             plugins={[defaultLayoutPluginInstance]}
                           />
                         </Worker>
                
+                      </div>
+                    </div>
+                  ) : fileType === 'docx' && fileContent ? (
+                    <div 
+                      style={{ 
+                        height: '100vh', 
+                        display: 'flex', 
+                        justifyContent: 'center', 
+                        alignItems: 'center' 
+                      }}
+                    >
+                      <div 
+                        style={{ 
+                          width: '75%', 
+                          height: '90vh', 
+                          border: '1px solid #ccc' 
+                        }}
+                      >
+                        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+                          <Viewer
+                            fileUrl={fileContent}
+                            plugins={[defaultLayoutPluginInstance]}
+                          />
+                        </Worker>
                       </div>
                     </div>
                   ) : fileType === 'image' && fileContent ? (
