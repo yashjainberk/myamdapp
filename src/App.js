@@ -25,6 +25,8 @@ import CreateCase from "./components/CreateCase";
 import EditCase from "./components/EditCase";
 import DynamicCaseTimeline from "./components/DynamicCaseTimeline";
 import DateRangeCaseFinder from './components/DateRangeCaseFinder';
+import FolderNameManager from './components/FolderNameManager';
+
 
 // ***** Added imports for PDF Viewer integration *****
 import { Viewer, Worker } from '@react-pdf-viewer/core';
@@ -112,6 +114,10 @@ function App() {
 
   // Instead of using `selectedSubfolder` for the incident, let the user type it in:
   const [incidentIDInput, setIncidentIDInput] = useState('');
+ const [folderMetadata, setFolderMetadata] = useState({});
+ const [folderBeingEdited, setFolderBeingEdited] = useState(null);
+ const [isRenamingFolder, setIsRenamingFolder] = useState(false);
+ const [selectedIncidentID, setSelectedIncidentID] = useState(null);
 
   const tableNames = ["Master", "Entities", "Product Analysis"]; // The three SQL tables
   const [columnsData, setColumnsData] = useState({});
@@ -360,6 +366,26 @@ function App() {
     }
   };
 
+  const handleRenameClick = (e, folderName) => {
+    e.stopPropagation(); 
+    setFolderBeingEdited(folderName);
+    setIsRenamingFolder(true);
+  };
+const fetchFolderName = async (folderPath) => {
+    try {
+      const metadataPath = `https://dvuemoresa.blob.core.windows.net/my-container/${folderPath}/.metadata.json`;
+      if (response.ok) {
+      const response = await fetch(metadataPath);
+        const metadata = await response.json();
+        return metadata.displayName;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching metadata:', error);
+      return null;
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline /> {/* Normalize CSS */}
@@ -575,6 +601,20 @@ function App() {
                 {/* --------------------------------------------- */}
                 {/* END: INCIDENT ID + TABLE SELECTION           */}
                 {/* --------------------------------------------- */}
+ 
+
+                {/* Display Folder Contents */}
+                {loading ? (
+                  <CircularProgress />
+                ) : (
+                  <Grid container spacing={3}>
+                    {data && 
+                      Object.keys(data.folders).map((folderName, index) => (
+                        <Grid item xs={12} sm={6} md={4} key={index}>
+                          <FolderCard onClick={() => setSelectedFolder(folderName)}>
+                            <CardActionArea>
+                              <CardContent>
+                                <Typography variant="h6">{folderName}</Typography>
 
                 {/* Display Folder Contents */}
                 {loading ? (
@@ -599,30 +639,43 @@ function App() {
                     }
                   </Grid>
                 )}
-
-                {/* Render Subfolders */}
-                {selectedFolder && data.folders[selectedFolder] && (
-                  <Box mt={5}>
-                    <Typography variant="h5">Subfolders</Typography>
-                    <Grid container spacing={3}>
-                      {Object.entries(data.folders[selectedFolder]).map(
-                        ([subfolderName, filesInfo]) => (
-                          <Grid item xs={12} sm={6} md={4} key={subfolderName}>
-                            {/* Click to set the selected subfolder */}
-                            <FolderCard onClick={() => handleSubfolderClick(subfolderName)}>
-                              <CardActionArea>
-                                <CardContent>
-                                  <Typography variant="h6">{subfolderName}</Typography>
-                                  <Typography variant="body2">
-                                    Click to view files
-                                  </Typography>
-                                </CardContent>
-                              </CardActionArea>
-                            </FolderCard>
-                          </Grid>
-                        )
-                      )}
-                    </Grid>
+  
+               {/* Render Subfolders */}
+               {selectedFolder && data.folders[selectedFolder] && (
+                 <Box mt={5}>
+                   <Typography variant="h5">Subfolders</Typography>
+                   <Grid container spacing={3}>
+                     {Object.entries(data.folders[selectedFolder]).map(([subfolderName, filesInfo]) => (
+                       <Grid item xs={12} sm={6} md={4} key={subfolderName}>
+                         {/* Click to set the selected subfolder */}
+                         <FolderCard onClick={() => handleSubfolderClick(subfolderName)}>
+                           <CardActionArea>
+                             <CardContent>
+                               <Typography variant="h6">{folderMetadata[subfolderName] ||  subfolderName}</Typography>
+                               <Typography variant="body2">Click to view files</Typography>
+                               <Button 
+                                  onClick={(e) => handleRenameClick(e, `${selectedFolder}/${subfolderName}`)}
+                                  variant="contained"
+                                  size="small"
+                                  sx={{ mt: 1 }}
+                                >
+                                  Rename Case
+                                </Button>
+                                {isRenamingFolder && folderBeingEdited == `${selectedFolder}/${subfolderName}` && (
+                                  <FolderNameManager 
+                                    folderPath={`${selectedFolder}/${subfolderName}`}
+                                    onClose={() => {
+                                      setIsRenamingFolder(false)
+                                      setFolderBeingEdited(null)
+                                    }}
+                                  />
+                                )}
+                             </CardContent>
+                           </CardActionArea>
+                         </FolderCard>
+                       </Grid>
+                     ))}
+                   </Grid>
 
                     {/* Display Metadata for Selected IncID (only if desired) */}
                     {incidentMetadata && (
@@ -717,6 +770,7 @@ function App() {
                             plugins={[defaultLayoutPluginInstance]}
                           />
                         </Worker>
+               
                       </div>
                     </div>
                   ) : fileType === 'image' && fileContent ? (
