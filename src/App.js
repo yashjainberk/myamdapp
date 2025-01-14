@@ -602,20 +602,6 @@ const fetchFolderName = async (folderPath) => {
                 {/* END: INCIDENT ID + TABLE SELECTION           */}
                 {/* --------------------------------------------- */}
  
-
-                {/* Display Folder Contents */}
-                {loading ? (
-                  <CircularProgress />
-                ) : (
-                  <Grid container spacing={3}>
-                    {data && 
-                      Object.keys(data.folders).map((folderName, index) => (
-                        <Grid item xs={12} sm={6} md={4} key={index}>
-                          <FolderCard onClick={() => setSelectedFolder(folderName)}>
-                            <CardActionArea>
-                              <CardContent>
-                                <Typography variant="h6">{folderName}</Typography>
-
                 {/* Display Folder Contents */}
                 {loading ? (
                   <CircularProgress />
