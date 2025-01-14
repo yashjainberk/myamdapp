@@ -168,6 +168,7 @@ function CreateCase({ onUploadSuccess }) {
             <MenuItem value="Ngo Inquiry"> NGO Inquiry </MenuItem>
             <MenuItem value="Internal Investigations"> Internal Investigations </MenuItem>
             <MenuItem value="Counterfeit"> Counterfeit </MenuItem>
+            <MenuItem value="Subpoena"> Subpoena </MenuItem>
           </TextField>
         </Grid>
 
