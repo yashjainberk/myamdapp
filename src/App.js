@@ -170,9 +170,9 @@ function App() {
       try {
         const response = await axios.get(
           'https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get_blob_data?code=k6NuFOUA40OdJaUrJ2unbII_1sYdA7MZCkNiHMzn9MxeAzFu7bc-8w%3D%3D',
-          { params: { containerName: 'my-container' } }
+            { params: { containerName: 'my-container' } }
         );
-
+      
         setData(response.data)
         setLoading(false); // Set loading to false after fetching
       } catch (error) {
@@ -205,11 +205,16 @@ function App() {
 
   const fetchTableData = async () => {
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         'https://dvue-morepython-fa.dvue-itapps-asev3.appserviceenvironment.net/api/get-incident?code=-RE09plkVuSNWm16i5RynbQe1k72N1QK2ldN0bJPDL5xAzFust8mbg%3D%3D',
         {
           incidentID: incidentIDInput,
           tables: selectedColumns,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
       );
       setTableData(response.data);
@@ -371,6 +376,7 @@ function App() {
     setFolderBeingEdited(folderName);
     setIsRenamingFolder(true);
   };
+
 const fetchFolderName = async (folderPath) => {
     try {
       const metadataPath = `https://dvuemoresa.blob.core.windows.net/my-container/${folderPath}/.metadata.json`;
@@ -386,8 +392,8 @@ const fetchFolderName = async (folderPath) => {
     }
   };
 
-  useEffect(() => {
-    if (selectedFolder && data?.folders[selectedFolder]) {
+   useEffect(() => {
+    if (selectedFolder && data?.folders[selectedFolder]) {  
       Object.keys(data.folders[selectedFolder]).forEach(async (subfolderName) => {
         const displayName = await fetchFolderName(`${selectedFolder}/${subfolderName}`);
         if (displayName) {
@@ -648,7 +654,6 @@ const fetchFolderName = async (folderPath) => {
                      {Object.entries(data.folders[selectedFolder])
                      .filter(([subfolderName, filesInfo]) => {
                       // Remove subfolders and folder_creation_time
-                        console.log(folderMetadata[subfolderName])
                         const { subfolders, folder_creation_time, ...rest } = filesInfo;
                         return Object.keys(rest).length > 0;
                      })
